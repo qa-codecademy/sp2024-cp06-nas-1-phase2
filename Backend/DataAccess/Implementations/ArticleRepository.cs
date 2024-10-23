@@ -1,14 +1,14 @@
 ﻿using DataAccess.Interfaces;
 using DomainModels;
 using Microsoft.EntityFrameworkCore;
-using Shared.Modules;
+using Microsoft.Extensions.Logging;
 
 namespace DataAccess.Implementations
 {
     public class ArticleRepository : Repository<Article>, IArticleRepository
     {
         private readonly NewsAggregatorDbContext _context;
-        public ArticleRepository(NewsAggregatorDbContext context) : base(context)
+        public ArticleRepository(NewsAggregatorDbContext context, ILogger<Repository<Article>> logger) : base(context, logger)
         {
             _context = context;
         }

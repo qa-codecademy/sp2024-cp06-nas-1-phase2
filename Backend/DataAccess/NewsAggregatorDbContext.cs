@@ -5,7 +5,7 @@ namespace DataAccess
 {
     public class NewsAggregatorDbContext : DbContext
     {
-        public NewsAggregatorDbContext(DbContextOptions<NewsAggregatorDbContext> options) : base(options)
+        public NewsAggregatorDbContext(DbContextOptions options) : base(options)
         {
             Console.WriteLine("DbContext instance created");
         }
@@ -22,6 +22,7 @@ namespace DataAccess
         }
         public DbSet<Article> Articles { get; set; }
         public DbSet<RssFeed> RssFeeds { get; set; }
+        public DbSet<User> Users { get; set; }
         //public DbSet<UrlToImageConfig> UrlToImageConfigs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)

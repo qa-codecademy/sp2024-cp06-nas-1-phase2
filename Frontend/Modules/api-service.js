@@ -60,15 +60,16 @@ export class ApiService
 //#endregion
         this.jsonUrl = 
         {
-            0: 'https://localhost:5002/News',
-            1: 'https://dnisko.ddns.net:5002/News'
-        }
+            //0: 'https://localhost:5002/News',
+            1: 'https://dnisko.ddns.net:7105/api/Api/getNews'
+        };
     }
     
     async fetchRssFeed()
     {
         try
         {
+            
             let response;
             try
             {
@@ -91,6 +92,7 @@ export class ApiService
                     throw new Error(`Failed to fetch from ${this.jsonUrl[1]}`);
                 }
             }
+            debugger;
             console.log(response);
             const jsonData = await response.json();
             console.log(jsonData);

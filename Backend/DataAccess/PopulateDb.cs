@@ -80,6 +80,7 @@ namespace DataAccess
                         Query = "thumbnail"
                     }
                 });
+
             /*
             builder.Entity<RssFeed>()
                 .HasData(new List<RssFeed>

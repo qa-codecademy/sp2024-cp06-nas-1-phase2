@@ -4,6 +4,7 @@ using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(NewsAggregatorDbContext))]
-    partial class NewsAggregatorDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241023005708_added_Users_table_v2")]
+    partial class added_Users_table_v2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -131,87 +133,6 @@ namespace DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("RssFeeds");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Attribute = "url",
-                            Author = "author",
-                            CreatedOn = new DateTime(2024, 10, 23, 16, 2, 26, 6, DateTimeKind.Local).AddTicks(4182),
-                            Description = "description",
-                            FeedUrl = "https://mia.mk/feed",
-                            Link = "link",
-                            ModifiedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            PubDate = "pubDate",
-                            Query = "enclosure",
-                            Source = "MIA",
-                            SourceUrl = "https://mia.mk",
-                            Title = "title"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Author = "dc:creator",
-                            CreatedOn = new DateTime(2024, 10, 23, 16, 2, 26, 6, DateTimeKind.Local).AddTicks(4240),
-                            Description = "content:encoded",
-                            FeedUrl = "https://telma.com.mk/feed/",
-                            Link = "link",
-                            ModifiedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            PubDate = "pubDate",
-                            Query = "content:encoded",
-                            Regex = "<img[^>]*src=\\\"([^\\\"]*)\\\"",
-                            Source = "Telma",
-                            SourceUrl = "https://telma.com.mk",
-                            Title = "title"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Attribute = "src",
-                            Author = "",
-                            CreatedOn = new DateTime(2024, 10, 23, 16, 2, 26, 6, DateTimeKind.Local).AddTicks(4245),
-                            Description = "content",
-                            FeedUrl = "https://admin.24.mk/api/rss.xml",
-                            Link = "link",
-                            ModifiedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            PubDate = "pubDate",
-                            Query = "img",
-                            Source = "24Vesti",
-                            SourceUrl = "https://24.mk",
-                            Title = "title"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Author = "dc:creator",
-                            CreatedOn = new DateTime(2024, 10, 23, 16, 2, 26, 6, DateTimeKind.Local).AddTicks(4251),
-                            Description = "description",
-                            FeedUrl = "https://sitel.com.mk/rss.xml",
-                            Link = "link",
-                            ModifiedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            PubDate = "pubDate",
-                            Query = "description",
-                            Regex = "<img[^>]*src=\\\"([^\\\"]*)\\\"",
-                            Source = "Sitel",
-                            SourceUrl = "https://sitel.com.mk",
-                            Title = "title"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Author = "author",
-                            CreatedOn = new DateTime(2024, 10, 23, 16, 2, 26, 6, DateTimeKind.Local).AddTicks(4255),
-                            Description = "content",
-                            FeedUrl = "https://kanal5.com.mk/rss.aspx",
-                            Link = "link",
-                            ModifiedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            PubDate = "pubDate",
-                            Query = "thumbnail",
-                            Source = "Kanal5",
-                            SourceUrl = "https://kanal5.com.mk",
-                            Title = "title"
-                        });
                 });
 
             modelBuilder.Entity("DomainModels.User", b =>

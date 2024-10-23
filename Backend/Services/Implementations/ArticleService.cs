@@ -31,7 +31,6 @@ namespace Services.Implementations
 
             return new PaginatedResult<ArticleDto>(articleDtos, totalCount, pageNumber, pageSize);
         }
-
         public async Task<IEnumerable<ArticleDto>> GetAllArticlesBySourceAsync(int rssFeedId)
         {
             try

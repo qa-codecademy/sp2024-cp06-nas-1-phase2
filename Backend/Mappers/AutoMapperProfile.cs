@@ -2,6 +2,7 @@
 using DomainModels;
 using DTOs.Article;
 using DTOs.RssFeed;
+using DTOs.User;
 
 namespace Mappers
 {
@@ -16,6 +17,10 @@ namespace Mappers
 
             //Article
             CreateMap<Article, ArticleDto>().ReverseMap();
+
+            //User
+            CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<User, RegisterUserDto>().ReverseMap();
         }
     }
 }

@@ -40,15 +40,20 @@ export class NewsService
         try
         {
             const newsData = await this.apiService.fetchRssFeed();
+            console.log("================================================");
+            
+            console.log(newsData);
+            console.log(newsData.items);
+            
             if (newsData.length === 0)
             {
                 throw new Error("No news found! Try again");
             }
 
-            const sortedNews = newsData.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
-            this.mappedNews = this.mapNewsData(sortedNews);
+            //const sortedNews = newsData.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+            //this.mappedNews = this.mapNewsData(newsData.items);
             
-            this.newsArray = this.mappedNews;
+            this.newsArray = newsData.items;
             this.currentPage = 1;
             this.renderPage(this.currentPage, this.cardContainer, this.newsArray);
         }

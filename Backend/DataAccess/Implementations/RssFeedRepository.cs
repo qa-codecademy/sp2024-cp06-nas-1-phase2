@@ -1,13 +1,14 @@
 ﻿using DataAccess.Interfaces;
 using DomainModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DataAccess.Implementations
 {
     public class RssFeedRepository : Repository<RssFeed>, IRssFeedRepository
     {
         private readonly NewsAggregatorDbContext _context;
-        public RssFeedRepository(NewsAggregatorDbContext context) : base(context)
+        public RssFeedRepository(NewsAggregatorDbContext context, ILogger<Repository<RssFeed>> logger) : base(context, logger)
         {
             _context = context;
         }
