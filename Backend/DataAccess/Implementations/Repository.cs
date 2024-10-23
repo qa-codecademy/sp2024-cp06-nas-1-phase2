@@ -1,4 +1,5 @@
-﻿using DataAccess.Interfaces;
+﻿using System.Linq.Expressions;
+using DataAccess.Interfaces;
 using DomainModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -95,6 +96,11 @@ namespace DataAccess.Implementations
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        public async Task<IEnumerable<T>> GetAllByConditionAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _table.Where(predicate).ToListAsync();
         }
     }
 }

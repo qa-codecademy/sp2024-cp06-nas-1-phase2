@@ -26,5 +26,10 @@ namespace Services.Implementations
         {
             return await _articleService.GetPagedArticlesBySourceAsync(rssFeedId, pageNumber, pageSize);
         }
+
+        public async Task<ArticleDto> GetArticleByIdAsync(int articleId)
+        {
+            return await _articleService.GetArticleByIdAsync(articleId);
+        }
     }
 }

@@ -36,6 +36,8 @@ namespace Helpers.Extensions
             services.AddScoped<IRssFeedRepository, RssFeedRepository>();
             services.AddScoped<IArticleRepository, ArticleRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ICommentRepository, CommentRepository>();
+            services.AddScoped<IFeedbackRepository, FeedbackRepository>();
 
             return services;
         }
@@ -51,6 +53,8 @@ namespace Helpers.Extensions
             services.AddScoped<IArticleService, ArticleService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IFeedbackService, FeedbackService>();
 
             return services;
         }

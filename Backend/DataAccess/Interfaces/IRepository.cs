@@ -1,4 +1,5 @@
 ﻿using DomainModels;
+using System.Linq.Expressions;
 
 namespace DataAccess.Interfaces
 {
@@ -9,5 +10,6 @@ namespace DataAccess.Interfaces
         Task AddAsync(T entity);
         Task UpdateAsync(T entity);
         Task DeleteAsync(int id);
+        Task<IEnumerable<T>> GetAllByConditionAsync(Expression<Func<T, bool>> predicate);
     }
 }

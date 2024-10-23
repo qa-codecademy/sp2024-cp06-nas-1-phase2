@@ -23,6 +23,8 @@ namespace DataAccess
         public DbSet<Article> Articles { get; set; }
         public DbSet<RssFeed> RssFeeds { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<Feedback> Feedback { get; set; }
         //public DbSet<UrlToImageConfig> UrlToImageConfigs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)

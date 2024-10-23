@@ -27,6 +27,23 @@ namespace sp2024_cp06_nas_1_phase2.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpGet("getNewsById/{id}")]
+        public async Task<IActionResult> GetNewsById(int id)
+        {
+            try
+            {
+                var article = await _apiService.GetArticleByIdAsync(id);
+                if (article == null)
+                {
+                    return BadRequest("No article with that id");
+                }
+                return Ok(article);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         [HttpGet("getNewsBySource/{rssFeedId}")]
         public async Task<IActionResult> GetNewsBySource(int rssFeedId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
@@ -40,5 +57,6 @@ namespace sp2024_cp06_nas_1_phase2.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
     }
 }

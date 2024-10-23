@@ -99,5 +99,12 @@ namespace Services.Implementations
                 // Add other properties as needed
             });
         }
+
+        public async Task<ArticleDto> GetArticleByIdAsync(int id)
+        {
+            var article = await _articleRepository.GetByIdAsync(id);
+            var mappedArticle = _mapper.Map<ArticleDto>(article);
+            return mappedArticle;
+        }
     }
 }
