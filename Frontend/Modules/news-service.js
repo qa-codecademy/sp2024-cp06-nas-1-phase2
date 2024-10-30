@@ -18,9 +18,7 @@ export class NewsService {
 		this.fullStoryContent = document.getElementById("fullStoryContent");
 
 		this.paginationContainer = document.getElementById("paginationContainer");
-		this.paginationContainerArchive = document.getElementById(
-			"paginationContainerArchive"
-		);
+		this.paginationContainerArchive = document.getElementById("paginationContainerArchive");
 
 		this.dropdownItems = document.getElementById("dropdownItems");
 		this.spinnerWrapper = document.getElementById("spinner-wrapper");
