@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace DataAccess.Interfaces
 {
-    public interface IRepository<T> where T : BaseClass
+    public interface IRepository<T> where T : BaseEntity
     {
         Task<IEnumerable<T>> GetAllAsync();
         Task<T> GetByIdAsync(int id);

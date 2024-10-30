@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Modules\" />
+    <Folder Include="Settings\" />
+  </ItemGroup>
+
 </Project>

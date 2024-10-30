@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DataAccess.Implementations
 {
-    public class Repository<T> : IRepository<T> where T : BaseClass
+    public class Repository<T> : IRepository<T> where T : BaseEntity
     {
         private readonly NewsAggregatorDbContext _context;
         private readonly DbSet<T> _table;

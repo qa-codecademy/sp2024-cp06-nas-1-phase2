@@ -3,6 +3,7 @@ using DataAccess;
 using DataAccess.Implementations;
 using DataAccess.Interfaces;
 using DomainModels;
+using Helpers.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -12,7 +13,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Services.Implementations;
 using Services.Interfaces;
-using Shared.Settings;
 
 namespace Helpers.Extensions
 {
@@ -25,8 +25,7 @@ namespace Helpers.Extensions
                     //.EnableSensitiveDataLogging() // This enables detailed logging of SQL queries
                     .LogTo(Console.WriteLine, LogLevel.Information),
                 ServiceLifetime.Scoped);
-                
-
+            
             return services;
         }
 
@@ -47,8 +46,7 @@ namespace Helpers.Extensions
             services.AddTransient<IArticleBackgroundService, ArticleBackgroundService>();
             services.AddHostedService<ArticleBackgroundService>();
 
-            services.AddScoped<ILoggerHelper, LoggerHelper<BaseClass>>();
-            services.AddScoped<IApiService, ApiService>();
+            services.AddScoped<ILoggerHelper, LoggerHelper<BaseEntity>>();
             services.AddScoped<IRssFeedService, RssFeedService>();
             services.AddScoped<IArticleService, ArticleService>();
             services.AddScoped<IUserService, UserService>();
@@ -111,7 +109,6 @@ namespace Helpers.Extensions
             var appSettings = appSettingsSection.Get<AppSettings>();
 
             var token = appSettings.Secret;
-            //var token = configuration.GetSection(Program).Value;
             services.AddAuthentication(option =>
             {
                 option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

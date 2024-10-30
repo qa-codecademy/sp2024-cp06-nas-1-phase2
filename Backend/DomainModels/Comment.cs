@@ -1,6 +1,6 @@
 ﻿namespace DomainModels
 {
-    public class Comment : BaseClass
+    public class Comment : BaseEntity
     {
         public string Username { get; set; }
         public string Content { get; set; }

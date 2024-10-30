@@ -21,7 +21,6 @@ namespace UpdateArticleDates
                     var parsedDate = DateParser.ParseDate(article.PubDate);
                     if (parsedDate.HasValue)
                     {
-                        // Assign the parsed DateTime directly to the PubDate property
                         article.PubDate = parsedDate.Value.ToString(); 
                     }
                 }

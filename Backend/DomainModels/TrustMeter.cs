@@ -1,6 +1,6 @@
 ﻿namespace DomainModels
 {
-    public class TrustMeter : BaseClass
+    public class TrustMeter : BaseEntity
     {
         public int ArticleId { get; set; }
         public double TrustScore { get; set; } // e.g., calculated from feedback
