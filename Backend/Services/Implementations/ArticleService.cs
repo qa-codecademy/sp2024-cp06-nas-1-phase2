@@ -88,16 +88,14 @@ namespace Services.Implementations
         public async Task<IEnumerable<ArticleDto>> GetPagedArticlesBySourceAsync(int rssFeedId, int pageNumber, int pageSize)
         {
             var articles = await _articleRepository.GetPagedArticlesByRssSourceIdAsync(rssFeedId, pageNumber, pageSize);
-
-            // Convert to DTOs if necessary
-            return articles.Select(a => new ArticleDto
-            {
-                // Map properties from Article to ArticleDto
-                Id = a.Id,
-                Title = a.Title,
-                Link = a.Link,
-                // Add other properties as needed
-            });
+            var result = _mapper.Map<IEnumerable<ArticleDto>>(articles);
+            return result;
+        }
+        public async Task<ArticleDto> GetArticleByIdAsync(int id)
+        {
+            var article = await _articleRepository.GetByIdAsync(id);
+            var mappedArticle = _mapper.Map<ArticleDto>(article);
+            return mappedArticle;
         }
     }
 }

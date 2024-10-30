@@ -106,23 +106,6 @@ namespace Services.Implementations
 
                 foreach (var rssFeed in rssFeeds)
                 {
-                    /*
-                    var image = new List<string>();
-                    if (!string.IsNullOrEmpty(rssFeed.Query))
-                    {
-                        image.Add(rssFeed.Query);
-                    }
-
-                    if (!string.IsNullOrEmpty(rssFeed.Attribute))
-                    {
-                        image.Add(rssFeed.Attribute);
-                    }
-
-                    if (!string.IsNullOrEmpty(rssFeed.Regex))
-                    {
-                        image.Add(rssFeed.Regex);
-                    }
-                    */
                     var image = new List<string>
                     {
                         rssFeed.Query,
@@ -132,20 +115,6 @@ namespace Services.Implementations
 
                     var xmlContent = await FetchRssXmlAsync(rssFeed.FeedUrl);
                     var items = ParseRssItems(xmlContent);
-
-                    /*
-                    articles.AddRange(items.Select(item => new Article
-                    {
-                        Title = item.Element("title")?.Value!,
-                        Description = StripHtmlTags(item.Element("description")?.Value!),
-                        Link = item.Element("link")?.Value!,
-                        Author = item.Element("author")?.Value!,
-                        PubDate = item.Element("pubDate")?.Value ?? DateTime.Now.ToString(CultureInfo.CurrentCulture),
-                        FeedUrl = rssFeed.FeedUrl,
-                        RssFeedId = rssFeed.Id,
-                        UrlToImage = GetImageUrl(item, image)
-                    }));
-                    */
 
                     foreach (var item in items)
                     {

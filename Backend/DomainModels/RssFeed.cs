@@ -2,7 +2,7 @@
 
 namespace DomainModels
 {
-    public class RssFeed : BaseClass
+    public class RssFeed : BaseEntity
     {
         [Required]
         public string Source { get; set; }

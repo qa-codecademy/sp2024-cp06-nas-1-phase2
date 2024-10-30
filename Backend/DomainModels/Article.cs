@@ -1,6 +1,8 @@
-﻿namespace DomainModels
+﻿using System.Xml.Linq;
+
+namespace DomainModels
 {
-    public class Article : BaseClass
+    public class Article : BaseEntity
     {
         public string Title { get; set; }
         public string Description { get; set; }
@@ -14,5 +16,7 @@
         public RssFeed RssFeed { get; set; } // Navigation property to RssFeed
 
         public string UrlToImage { get; set; } // For image extraction
+        public ICollection<Comment> Comments { get; set; }
+        public ICollection<Feedback> Feedbacks { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Shared.Modules
+﻿namespace Helpers.Modules
 {
     public static class DateParser
     {

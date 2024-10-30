@@ -1,7 +1,7 @@
 using Helpers.Extensions;
+using Helpers.Settings;
 using Mappers;
 using Serilog;
-using Shared.Settings;
 
 namespace sp2024_cp06_nas_1_phase2
 {
@@ -60,15 +60,8 @@ namespace sp2024_cp06_nas_1_phase2
 
             app.MapControllers();
 
+            app.UseCors("CORSPolicy");
             app.Run();
         }
-
-        //public static IHostBuilder CreateHostBuilder(string[] args) =>
-        //    Host.CreateDefaultBuilder(args)
-        //        .UseSerilog()  // Use Serilog as the logger
-        //        .ConfigureWebHostDefaults(webBuilder =>
-        //        {
-        //            webBuilder.UseStartup<Program>();
-        //        });
     }
 }

@@ -85,7 +85,7 @@ namespace DataAccess.Implementations
                    .OrderByDescending(article => article.PubDate) // Order by the actual DateTime property
                    .Skip((pageNumber - 1) * pageSize)
                    .Take(pageSize)
-                   .ToListAsync(); // Execute the query and retrieve the data
+                   .ToListAsync();
                  
             }
             catch (Exception ex)
