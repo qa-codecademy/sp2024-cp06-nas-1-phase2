@@ -2,11 +2,12 @@
 using System.Security.Claims;
 using System.Text;
 using DomainModels;
+using Common.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Services.Interfaces;
-using Shared.Settings;
+
 
 namespace Services.Implementations
 {

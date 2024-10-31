@@ -1,4 +1,4 @@
-﻿namespace Helpers.Settings
+﻿namespace Common.Settings
 {
     public class AppSettings
     {

@@ -1,9 +1,9 @@
 ﻿using System.Text;
+using Common.Settings;
 using DataAccess;
 using DataAccess.Implementations;
 using DataAccess.Interfaces;
 using DomainModels;
-using Helpers.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -14,7 +14,7 @@ using Microsoft.OpenApi.Models;
 using Services.Implementations;
 using Services.Interfaces;
 
-namespace Helpers.Extensions
+namespace Services.Helpers
 {
     public static class ServiceCollectionExtensions
     {

@@ -1,6 +1,6 @@
-﻿using DataAccess;
+﻿using Common.Modules;
+using DataAccess;
 using Microsoft.EntityFrameworkCore;
-using Shared.Modules;
 
 namespace UpdateArticleDates
 {

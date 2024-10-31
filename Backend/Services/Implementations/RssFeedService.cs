@@ -2,12 +2,12 @@
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using AutoMapper;
+using Common.Modules;
 using DataAccess.Interfaces;
 using DomainModels;
 using DTOs.Article;
 using DTOs.RssFeed;
 using Services.Interfaces;
-using Shared.Modules;
 
 namespace Services.Implementations
 {

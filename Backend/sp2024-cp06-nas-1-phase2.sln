@@ -26,7 +26,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestDb", "TestDb\TestDb.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UpdateArticleDates", "UpdateArticleDates\UpdateArticleDates.csproj", "{7B97BCFE-CB7A-4552-B661-FEE0145ACCD5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Helpers", "Helpers\Helpers.csproj", "{24F7A35C-6C1E-4B16-A5DA-46E4E6F39704}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Helpers\Common.csproj", "{24F7A35C-6C1E-4B16-A5DA-46E4E6F39704}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
