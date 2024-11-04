@@ -1,10 +1,7 @@
-﻿using AutoMapper;
-using DomainModels;
-using DTOs.RssFeed;
-using Mappers;
-using Microsoft.AspNetCore.Http;
+﻿using DTOs.RssFeed;
 using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace sp2024_cp06_nas_1_phase2.Controllers
 {
@@ -48,7 +45,16 @@ namespace sp2024_cp06_nas_1_phase2.Controllers
         }
 
         [HttpPost("addRssFeed")]
-        public async Task<IActionResult> AddRssFeed([FromBody] AddRssFeedDto addRssFeedDto)
+        [SwaggerOperation(
+            Summary = "Add a new RSS feed",
+            Description = "Adds a new RSS feed to the database with details like source name, URL, feed URL, title, description, and image query parameters."
+        )]
+        [SwaggerResponse(200, "The RSS feed was added successfully.")]
+        [SwaggerResponse(400, "Invalid input data.")]
+        public async Task<IActionResult> AddRssFeed([
+                FromBody, 
+                SwaggerParameter("Details of the RSS feed to add. See each property for specific info.")] 
+            AddRssFeedDto addRssFeedDto)
         {
             try
             {
@@ -60,6 +66,35 @@ namespace sp2024_cp06_nas_1_phase2.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPut("updateRssFeed/{id}")]
+        public async Task<IActionResult> UpdateRssFeed(int id, [FromBody] UpdateRssFeedDto updateRssFeedDto)
+        {
+            try
+            {
+                await _rssFeedService.UpdateRssFeedAsync(id, updateRssFeedDto);
+                return Ok($"The RSS {updateRssFeedDto.Source} was updated!");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("deleteRssFeed/{id}")]
+        public async Task<IActionResult> DeleteRssFeed(int id)
+        {
+            try
+            {
+                await _rssFeedService.DeleteRssFeedAsync(id);
+                return Ok($"The RSS with id: {id} was deleted!");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet]
         public async Task<IActionResult> FetchAndProcessRssFeedsAsync(CancellationToken cancellationToken)
         {

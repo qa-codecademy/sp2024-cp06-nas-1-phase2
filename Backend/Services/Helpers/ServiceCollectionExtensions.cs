@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Reflection;
+using System.Text;
 using Common.Settings;
 using DataAccess;
 using DataAccess.Implementations;
@@ -84,6 +85,8 @@ namespace Services.Helpers
                         Array.Empty<string>()
                     }
                 });
+
+                c.EnableAnnotations();
             });
 
             return services;

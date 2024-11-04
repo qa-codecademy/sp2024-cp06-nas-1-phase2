@@ -12,7 +12,7 @@ namespace Services.Interfaces
         //Task<string> FetchRssFeedXmlAsync(string feedUrl);
         //Task<RssFeedDto> GetRssFeedByIdAsync(int id);
         Task AddRssFeedAsync(AddRssFeedDto rssFeedDto);
-        //Task UpdateRssFeedAsync(UpdateRssFeedDto rssFeedDto);
-        //Task DeleteRssFeedAsync(int id);
+        Task<RssFeedDto> UpdateRssFeedAsync(int id, UpdateRssFeedDto rssFeedDto);
+        Task DeleteRssFeedAsync(int id);
     }
 }

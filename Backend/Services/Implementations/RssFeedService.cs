@@ -68,12 +68,19 @@ namespace Services.Implementations
                 throw new Exception(ex.Message);
             }
         }
-        public async Task UpdateRssFeedAsync(UpdateRssFeedDto rssFeedDto)
+        public async Task<RssFeedDto> UpdateRssFeedAsync(int id, UpdateRssFeedDto updateRssFeedDto)
         {
             try
             {
-                var rssSource = _mapper.Map<RssFeed>(rssFeedDto);
+                var rssSource = await _rssFeedRepository.GetByIdAsync(id);
+                if (rssSource == null)
+                {
+                    throw new KeyNotFoundException();
+                }
+
+                _mapper.Map(updateRssFeedDto, rssSource);
                 await _rssFeedRepository.UpdateAsync(rssSource);
+                return _mapper.Map<RssFeedDto>(rssSource);
             }
             catch (Exception ex)
             {
@@ -84,11 +91,13 @@ namespace Services.Implementations
         {
             try
             {
-                var rssSource = _rssFeedRepository.GetByIdAsync(id).ToString();
-                if (rssSource != null)
-                    await _rssFeedRepository.DeleteAsync(id);
-                else
-                    throw new Exception();
+                var rssSource = await _rssFeedRepository.GetByIdAsync(id);
+                if (rssSource == null)
+                {
+                    throw new KeyNotFoundException();
+                }
+
+                await _rssFeedRepository.DeleteAsync(id);
             }
             catch (Exception ex)
             {
