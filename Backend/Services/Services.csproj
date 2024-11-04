@@ -16,7 +16,6 @@
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
     <ProjectReference Include="..\DTOs\DTOs.csproj" />
-    <ProjectReference Include="..\Helpers\Common.csproj" />
     <ProjectReference Include="..\Mappers\Mappers.csproj" />
   </ItemGroup>
 

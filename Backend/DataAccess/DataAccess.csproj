@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DomainModels\DomainModels.csproj" />
-    <ProjectReference Include="..\Shared\Shared.csproj" />
   </ItemGroup>
 
 </Project>
