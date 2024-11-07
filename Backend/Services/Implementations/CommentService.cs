@@ -23,8 +23,15 @@ namespace Services.Implementations
         {
             try
             {
+                //var comments = await _commentRepository.GetAllByConditionAsync(x => x.ArticleId == articleId);
+                //var mappedComment = _mapper.Map<IEnumerable<CommentDto>>(comments);
+                //return mappedComment;
                 var comments = await _commentRepository.GetAllByConditionAsync(x => x.ArticleId == articleId);
+                //Console.WriteLine($"Retrieved {comments.Count()} comments for ArticleId {articleId}" + comments.Count(), articleId);
+
                 var mappedComment = _mapper.Map<IEnumerable<CommentDto>>(comments);
+                //Console.WriteLine($"Mapped {comments.Count()} comments to CommentDto", mappedComment.Count());
+
                 return mappedComment;
             }
             catch (Exception ex)

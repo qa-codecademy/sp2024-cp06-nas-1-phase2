@@ -32,5 +32,19 @@ namespace sp2024_cp06_nas_1_phase2.Controllers
                 throw new Exception(ex.Message);
             }
         }
+
+        [HttpGet("getComments/{articleId}")]
+        public async Task<IActionResult> GetComments(int articleId)
+        {
+            try
+            {
+                var test = await _commentService.GetCommentsByArticleIdAsync(articleId);
+                return Ok(test);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

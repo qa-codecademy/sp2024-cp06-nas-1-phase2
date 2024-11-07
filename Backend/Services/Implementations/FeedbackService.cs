@@ -20,16 +20,19 @@ namespace Services.Implementations
             _mapper = mapper;
             _logger = logger;
         }
-        public async Task<double> CalculateTrustMeterAsync(int articleId)
+
+        public async Task<IEnumerable<FeedbackDto>> GetFeedbackByArticleIdAsync(int articleId)
         {
             try
             {
-                return await _feedbackRepository.CalculateTrustMeterAsync(articleId);
+                var feedback = await _feedbackRepository.GetAllByConditionAsync(x => x.ArticleId == articleId);
+                var mappedFeedback = _mapper.Map<IEnumerable<FeedbackDto>>(feedback);
+                return mappedFeedback;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while calculating trust meter!");
-                throw new Exception(ex.Message);
+                _logger.LogError(ex, "Error while getting comments.");
+                throw;
             }
         }
 
@@ -39,11 +42,25 @@ namespace Services.Implementations
             {
                 var feedbackModel = _mapper.Map<Feedback>(feedback);
                 await _feedbackRepository.AddAsync(feedbackModel);
+                //await AddTrustMeter(feedbackModel.ArticleId);
                 return _mapper.Map<FeedbackDto>(feedbackModel);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while adding feedback!");
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<double> CalculateTrustMeterAsync(int articleId)
+        {
+            try
+            {
+                return await _feedbackRepository.CalculateTrustMeterAsync(articleId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while calculating trust meter!");
                 throw new Exception(ex.Message);
             }
         }
@@ -68,5 +85,24 @@ namespace Services.Implementations
                 throw new Exception(ex.Message);
             }
         }
+
+        //private async Task AddTrustMeter(int articleId)
+        //{
+        //    try
+        //    {
+        //        var calculateTrustMeter = await _trustMeterRepository.CalculateTrustMeterAsync(articleId);
+        //        var trustMeter = new TrustMeter
+        //        {
+        //            ArticleId = articleId,
+        //            TrustScore = calculateTrustMeter
+        //        };
+
+        //        await _trustMeterRepository.AddAsync(trustMeter);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception(ex.Message);
+        //    }
+        //}
     }
 }
