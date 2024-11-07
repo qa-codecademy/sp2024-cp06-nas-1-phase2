@@ -1,25 +1,25 @@
-export class News
+export class Article
 {
     constructor({
         id,
-        source,
         title,
-        link,
         description,
-        pubDate,
+        link,
         author,
-        urlToImage,
-        trustScore
+        pubDate,
+        feedUrl,
+        rssFeedId,
+        urlToImage
     })
     {
         this.id = id;
-        this.source = source;
         this.title = title;
-        this.link = link;
         this.description = description;
-        this.pubDate = pubDate;
+        this.link = link;
         this.author = author;
+        this.pubDate = pubDate;
+        this.feedUrl = feedUrl;
+        this.rssFeedId = rssFeedId;
         this.urlToImage = urlToImage;
-        this.trustScore = trustScore;
     }
 }

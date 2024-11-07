@@ -1,5 +1,5 @@
 import { ApiService } from "./api-service.js";
-import { News } from "./news.js";
+import { Article } from "./Classes/article.js";
 import { RenderFullStory } from "../Renders/render-full-story.js";
 import { Render } from "../Renders/render.js";
 import { PaginationService } from "./pagination-service.js";
@@ -30,12 +30,20 @@ export class NewsService {
 		this.itemsPerPage = this.paginationService.itemsPerPage;
 
 		//debugger;
-        this.mainNews();
+		this.Test();
+        //this.mainNews();
         //this.getTopThreeNews();
-        this.getTopThreeNewsFromAllSources();
+        //this.getTopThreeNewsFromAllSources();
 		this.initializeEventHandlers();
 	}
 
+	async Test()
+	{
+		const article = await this.apiService.fetchArticleById(5);
+		console.log(article);
+		const comments = await this.apiService.fetchTrustScore(5);
+		console.log(comments);
+	}
 	async mainNews() {
 		try {   
             const pageNumber = 1; // Requesting the first page
@@ -55,11 +63,14 @@ export class NewsService {
 
 			this.newsArray = newsData.items;
 			this.currentPage = 1;
+			debugger;
+			console.log(newsData);
+			
 			this.renderPage(this.currentPage, this.cardContainer, this.newsArray);
 
             const sources = await this.apiService.fetchSources();
-            console.log(sources);
-            this.RenderSourcesContainers.render(sources);
+            //console.log(sources);
+            //this.RenderSourcesContainers.render(sources);
 		} catch (error) {
 			this.notification.innerHTML = `<div class='alert-danger'>${error.message}</div>`;
 		} finally {
@@ -73,10 +84,10 @@ export class NewsService {
         try {
             const newsData = await this.apiService.fetchTopThreeNews(pageNumber, pageSize);
             
-            console.log("================================================");
+            // console.log("================================================");
 
-			console.log(newsData);
-			console.log(newsData.items);
+			// console.log(newsData);
+			// console.log(newsData.items);
 
 			if (newsData.length === 0) {
 				throw new Error("No news found! Try again");
@@ -96,18 +107,22 @@ export class NewsService {
 
     async getTopThreeNewsFromAllSources() {
         try {
-            const sources = await this.apiService.fetchSources();
-            //debugger;
-            let topNewsResult = [];
-            for (const source of sources) {
-                const pageNumber = 1;
-                const pageSize = 3;
-                
-                const topNews = await this.apiService.fetchBySources(source.id, pageNumber, pageSize)
-                topNewsResult.push({source: source.source, news: topNews});
-            }
-            
-            Render.renderSources(topNewsResult, this.sourcesContainer);
+            // const sources = await this.apiService.fetchSources();
+            // //debugger;
+            // let topNewsResult = [];
+            // for (const source of sources) {
+            //     const pageNumber = 1;
+            //     const pageSize = 3;
+			const newsData = await this.apiService.fetchTopThreeNews(pageNumber, pageSize);
+			const result = await this.addSourceToNews(newsData);
+            //const topNews = await this.apiService.fetchBySources(source.id, pageNumber, pageSize)
+            //     topNewsResult.push({source: source.source, news: topNews});
+            // }
+			console.log("================================================");
+			
+            console.log(result);
+			
+            Render.renderSources(result, this.sourcesContainer);
             this.hideSpinner();
             
         } catch (error) {
@@ -115,8 +130,25 @@ export class NewsService {
             this.notification.innerHTML = `<div class='alert-danger'>${error.message}</div>`;
         }
     }
+
+	async addSourceToNews(news)
+	{
+		const sources = await this.apiService.fetchSources();
+		let newsResult = [];
+		for (const newsItem of news) {
+			const source = sources.find(s => s.id === newsItem.rssFeedId);
+			if (source)
+			{
+				newsResult.push({
+					source: source.source,
+					news: newsItem
+				})
+			}
+		}
+		return newsResult;
+	}
 	mapNewsData(news) {
-		return news.map((newsItem, index) => new News({ ...newsItem, id: index }));
+		return news.map((newsItem, index) => new Article({ ...newsItem, id: index }));
 	}
 
 	async archiveNews() {
@@ -133,7 +165,7 @@ export class NewsService {
 	//Pagination
 	//https://webdesign.tutsplus.com/pagination-with-vanilla-javascript--cms-41896t
 	renderPage(page, container = this.cardContainer, newsData = this.newsArray) {
-		//debugger;
+		debugger;
 		this.showSpinner();
 		const start = (page - 1) * this.itemsPerPage;
 		const end = start + this.itemsPerPage;

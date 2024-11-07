@@ -6,13 +6,53 @@ export class ApiService {
 		};
 	}
 
+	async fetchTrustScore(articleId) {
+		try {
+			const response = await fetch(
+				this.jsonUrl[1] + `Feedback/trust-meter/${articleId}`
+			);
+			const jsonData = await response.json();
+			console.log(jsonData);
+			
+			return jsonData;
+		} catch (error) {
+			console.error(error);
+		}
+	}
+	async fetchArticleById(articleId) {
+		try {
+			const response = await fetch(
+				this.jsonUrl[1] + `Article/getNewsById/${articleId}`
+			);
+			const jsonData = await response.json();
+			console.log(jsonData);
+			
+			return jsonData;
+		} catch (error) {
+			console.error(error);
+		}
+	}
+	async fetchCommentsFOrArticle(articleId) {
+		try {
+			const response = await fetch(
+				this.jsonUrl[1] + `Article/getNewsById/${articleId}`
+			);
+			const jsonData = await response.json();
+			console.log(jsonData);
+			
+			return jsonData;
+		} catch (error) {
+			console.error(error);
+		}
+	}
     async fetchRssFeed(pageNumber, pageSize) {
         try {
+			
             let response;
             try {
                 response = await fetch(
                     this.jsonUrl[0] +
-                    `Api/getNews?pageNumber=${pageNumber}&pageSize=${pageSize}`
+                    `Article/getNews?pageNumber=${pageNumber}&pageSize=${pageSize}`
                 );
                 if (!response.ok) {
                     console.warn(
@@ -24,7 +64,7 @@ export class ApiService {
                 console.warn(`First fetch attempt failed: ${error.message}`);
                 response = await fetch(
                     this.jsonUrl[1] +
-                    `Api/getNews?pageNumber=${pageNumber}&pageSize=${pageSize}`
+                    `Article/getNews?pageNumber=${pageNumber}&pageSize=${pageSize}`
                 );
 
                 if (!response.ok) {
@@ -46,7 +86,7 @@ export class ApiService {
 		try {
 			const response = await fetch(
 				this.jsonUrl[1] +
-					`Api/getNews?pageNumber=${pageNumber}&pageSize=${pageSize}`
+					`Article/getNews?pageNumber=${pageNumber}&pageSize=${pageSize}`
 			);
 			if (!response.ok) {
 				throw new Error(`HTTP ERROR. Status: ${response.status}`);
@@ -77,7 +117,7 @@ export class ApiService {
 		try {
 			const response = await fetch(
 				this.jsonUrl[1] +
-					`Api/getNewsBySource/${sourceId}?pageNumber=${pageNumber}&pageSize=${pageSize}`
+					`Article/getNewsBySource/${sourceId}?pageNumber=${pageNumber}&pageSize=${pageSize}`
 			);
 			if (!response.ok) {
 				throw new Error(`Failed to fetch sources: ${response.status}`);
