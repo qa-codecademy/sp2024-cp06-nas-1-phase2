@@ -9,7 +9,8 @@ export class Article
         pubDate,
         feedUrl,
         rssFeedId,
-        urlToImage
+        urlToImage,
+        trustScore
     })
     {
         this.id = id;
@@ -21,5 +22,6 @@ export class Article
         this.feedUrl = feedUrl;
         this.rssFeedId = rssFeedId;
         this.urlToImage = urlToImage;
+        this.trustScore = trustScore;
     }
 }

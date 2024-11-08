@@ -1,4 +1,4 @@
-import { RenderAds } from '../Renders/render-ads.js';
+import { RenderAds } from './Scripts/render-ads.js';
 
 export class Ads
 {

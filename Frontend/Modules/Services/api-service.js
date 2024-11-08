@@ -1,48 +1,40 @@
-export class ApiService {
-	constructor() {
-		this.jsonUrl = {
-			//0: 'https://localhost:5002/News',
-			1: "https://dnisko.ddns.net:7105/api/",
-		};
-	}
+import { config } from "../../Utils/config";
 
+export class ApiService {
+	constructor(){
+		this.apiUrl = config.apiUrls.production;
+	}
 	async fetchTrustScore(articleId) {
 		try {
-			const response = await fetch(
-				this.jsonUrl[1] + `Feedback/trust-meter/${articleId}`
-			);
+			const response = await fetch(`${this.apiUrl}/Feedback/trust-meter/${articleId}`);
 			const jsonData = await response.json();
-			console.log(jsonData);
+			//console.log(jsonData);
 			
 			return jsonData;
 		} catch (error) {
-			console.error(error);
+			//console.error(error);
 		}
 	}
 	async fetchArticleById(articleId) {
 		try {
-			const response = await fetch(
-				this.jsonUrl[1] + `Article/getNewsById/${articleId}`
-			);
+			const response = await fetch(`${this.apiUrl}/Article/getNewsById/${articleId}`);
 			const jsonData = await response.json();
-			console.log(jsonData);
+			//console.log(jsonData);
 			
 			return jsonData;
 		} catch (error) {
-			console.error(error);
+			//console.error(error);
 		}
 	}
 	async fetchCommentsFOrArticle(articleId) {
 		try {
-			const response = await fetch(
-				this.jsonUrl[1] + `Article/getNewsById/${articleId}`
-			);
+			const response = await fetch(`${this.apiUrl}/Article/getNewsById/${articleId}`);
 			const jsonData = await response.json();
-			console.log(jsonData);
+			//console.log(jsonData);
 			
 			return jsonData;
 		} catch (error) {
-			console.error(error);
+			//console.error(error);
 		}
 	}
     async fetchRssFeed(pageNumber, pageSize) {
@@ -50,28 +42,22 @@ export class ApiService {
 			
             let response;
             try {
-                response = await fetch(
-                    this.jsonUrl[0] +
-                    `Article/getNews?pageNumber=${pageNumber}&pageSize=${pageSize}`
-                );
+                response = await fetch(`${this.apiUrl}/Article/getNews?pageNumber=${pageNumber}&pageSize=${pageSize}`);
                 if (!response.ok) {
                     console.warn(
-                        `Failed to fetch from ${this.jsonUrl[0]} with status ${response.status}`
+                        `Failed to fetch from ${this.apiUrl}/} with status ${response.status}`
                     );
-                    throw new Error(`Failed to fetch from ${this.jsonUrl[0]}`);
+                    throw new Error(`Failed to fetch from ${this.apiUrl}/}`);
                 }
             } catch (error) {
                 console.warn(`First fetch attempt failed: ${error.message}`);
-                response = await fetch(
-                    this.jsonUrl[1] +
-                    `Article/getNews?pageNumber=${pageNumber}&pageSize=${pageSize}`
-                );
+                response = await fetch(`${this.apiUrl}/Article/getNews?pageNumber=${pageNumber}&pageSize=${pageSize}`);
 
                 if (!response.ok) {
                     console.error(
-                        `Failed to fetch from ${this.jsonUrl[1]} with status ${response.status}`
+                        `Failed to fetch from ${this.apiUrl}/} with status ${response.status}`
                     );
-                    throw new Error(`Failed to fetch from ${this.jsonUrl[1]}`);
+                    throw new Error(`Failed to fetch from ${this.apiUrl}/}`);
                 }
             }
             const jsonData = await response.json();
@@ -84,10 +70,7 @@ export class ApiService {
 
 	async fetchTopThreeNews(pageNumber, pageSize) {
 		try {
-			const response = await fetch(
-				this.jsonUrl[1] +
-					`Article/getNews?pageNumber=${pageNumber}&pageSize=${pageSize}`
-			);
+			const response = await fetch(`${this.apiUrl}/Article/getNews?pageNumber=${pageNumber}&pageSize=${pageSize}`);
 			if (!response.ok) {
 				throw new Error(`HTTP ERROR. Status: ${response.status}`);
 			}
@@ -101,7 +84,7 @@ export class ApiService {
 
 	async fetchSources() {
 		try {
-			const response = await fetch(this.jsonUrl[1] + `RssFeed/getAll`);
+			const response = await fetch(`${this.apiUrl}/RssFeed/getAll`);
 			if (!response.ok) {
 				throw new Error(`Failed to fetch sources: ${response.status}`);
 			}
@@ -115,10 +98,7 @@ export class ApiService {
 
 	async fetchBySources(sourceId, pageNumber, pageSize) {
 		try {
-			const response = await fetch(
-				this.jsonUrl[1] +
-					`Article/getNewsBySource/${sourceId}?pageNumber=${pageNumber}&pageSize=${pageSize}`
-			);
+			const response = await fetch(`${this.apiUrl}/Article/getNewsBySource/${sourceId}?pageNumber=${pageNumber}&pageSize=${pageSize}`);
 			if (!response.ok) {
 				throw new Error(`Failed to fetch sources: ${response.status}`);
 			}

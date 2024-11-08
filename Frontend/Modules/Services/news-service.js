@@ -1,14 +1,14 @@
-import { ApiService } from "./api-service.js";
-import { Article } from "./Classes/article.js";
-import { RenderFullStory } from "../Renders/render-full-story.js";
-import { Render } from "../Renders/render.js";
-import { PaginationService } from "./pagination-service.js";
-import { RenderFeedback } from "../Renders/render-feedback.js";
+//import { ApiService } from "./api-service.js";
+import { Article } from "../Models/article.js";
+import { RenderFullStory } from "../Scripts/render-full-story.js";
+import { Render } from "../Scripts/render.js";
+//import { PaginationService } from "../pagination-service.js";
+import { RenderFeedback } from "../Scripts/render-feedback.js";
 
 export class NewsService {
 	constructor() {
-		this.apiService = new ApiService();
-		this.paginationService = new PaginationService(this);
+		this.apiService = apiService;
+		//this.paginationService = new PaginationService(this);
 		this.RenderFeedback = new RenderFeedback();
 
 		this.notification = document.getElementById("notification");
@@ -30,8 +30,8 @@ export class NewsService {
 		this.itemsPerPage = this.paginationService.itemsPerPage;
 
 		//debugger;
-		this.Test();
-        //this.mainNews();
+		//this.Test();
+        this.mainNews();
         //this.getTopThreeNews();
         //this.getTopThreeNewsFromAllSources();
 		this.initializeEventHandlers();
@@ -40,9 +40,13 @@ export class NewsService {
 	async Test()
 	{
 		const article = await this.apiService.fetchArticleById(5);
-		console.log(article);
-		const comments = await this.apiService.fetchTrustScore(5);
-		console.log(comments);
+		//console.log(article);
+		const trustScoreResponse = await this.apiService.fetchTrustScore(5);
+		const trustScore = trustScoreResponse.trustScore;
+		//console.log(comments);
+		console.log(trustScore);
+		let articleWithTrustScore = new Article({...article, trustScore});
+		console.log(articleWithTrustScore);
 	}
 	async mainNews() {
 		try {   
@@ -61,10 +65,15 @@ export class NewsService {
 			//const sortedNews = newsData.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
 			//this.mappedNews = this.mapNewsData(newsData.items);
 
-			this.newsArray = newsData.items;
+			this.newsArray = await Promise.all(newsData.items.map(async (item) => {
+				const newsIitem = new Article(item);
+				const trustScoreData = await this.apiService.fetchTrustScore(newsIitem.id);
+				newsIitem.trustScore = trustScoreData.trustScore;
+				return newsIitem;
+			}));
+
 			this.currentPage = 1;
-			debugger;
-			console.log(newsData);
+			console.log("Articles with trust scores: ", this.newsArray);
 			
 			this.renderPage(this.currentPage, this.cardContainer, this.newsArray);
 
@@ -83,11 +92,6 @@ export class NewsService {
         
         try {
             const newsData = await this.apiService.fetchTopThreeNews(pageNumber, pageSize);
-            
-            // console.log("================================================");
-
-			// console.log(newsData);
-			// console.log(newsData.items);
 
 			if (newsData.length === 0) {
 				throw new Error("No news found! Try again");
@@ -164,13 +168,13 @@ export class NewsService {
 
 	//Pagination
 	//https://webdesign.tutsplus.com/pagination-with-vanilla-javascript--cms-41896t
-	renderPage(page, container = this.cardContainer, newsData = this.newsArray) {
+	renderPage(page, container = this.cardContainer, newsData = this.newsArray, rssFeedId) {
 		debugger;
 		this.showSpinner();
 		const start = (page - 1) * this.itemsPerPage;
 		const end = start + this.itemsPerPage;
 		const newsToRender = newsData.slice(start, end);
-		Render.main(newsToRender, container);
+		Render.main(newsToRender, container, rssFeedId);
 		this.paginationService.renderPagination();
 		this.hideSpinner();
 	}
