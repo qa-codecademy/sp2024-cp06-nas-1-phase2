@@ -44,6 +44,20 @@ namespace sp2024_cp06_nas_1_phase2.Controllers
             }
         }
 
+        [HttpGet("getById/{id:int}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            try
+            {
+                var response = await _rssFeedService.GetRssFeedById(id);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost("addRssFeed")]
         [SwaggerOperation(
             Summary = "Add a new RSS feed",

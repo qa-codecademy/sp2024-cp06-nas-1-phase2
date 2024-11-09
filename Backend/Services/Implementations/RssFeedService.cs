@@ -44,6 +44,19 @@ namespace Services.Implementations
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<RssFeedDto> GetRssFeedById(int id)
+        {
+            try
+            {
+                var feed = await _rssFeedRepository.GetByIdAsync(id);
+                return feed == null ? throw new KeyNotFoundException() : _mapper.Map<RssFeedDto>(feed);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         public async Task<RssFeedDto> GetRssFeedBySourceAsync(string source)
         {
             try
