@@ -1,13 +1,14 @@
 export class RenderSourcesContainers {
-    constructor(sourcesContainerId) {
+    constructor(sourcesContainerId, newsService) {
         this.sourcesContainer = document.getElementById(sourcesContainerId);
+        this.newsService = newsService;
     }
-    renderSources(sources, element) {
+    async renderSources(data, element) {
         //debugger;
-        //console.log(sources);
+        //console.log(data);
         
         element.innerHTML = '';
-        sources.forEach(sourceGroup => {
+        data.forEach(sourceGroup => {
             // Container for each source
             const newsItems = Array.isArray(sourceGroup.news) ? sourceGroup.news : JSON.parse(sourceGroup.news || '[]');
       
@@ -17,9 +18,17 @@ export class RenderSourcesContainers {
             // Source title
             const sourceNameDiv = document.createElement('div');
             sourceNameDiv.className = 'source-title';
-            sourceNameDiv.innerHTML = `<h2>${sourceGroup.source.source}</h2>`;
+            const sourceId = sourceGroup.source.id;
+            const sourceName = sourceGroup.source.source;
+            sourceNameDiv.innerHTML = `<h2><a href="#" id="newsLink${sourceId}"><i class="bi bi-newspaper"></i>${sourceName}</a></h2>`;
             sourceContainerDiv.appendChild(sourceNameDiv);
       
+            const newsLink = sourceNameDiv.querySelector(`#newsLink${sourceId}`);
+            newsLink.addEventListener("click", (event) => {
+                event.preventDefault();
+                this.newsService.getAllNewsFromSource(this.newsService.itemsPerPage, 1, sourceId);
+                console.log(`News link clicked for source: ${sourceName}`);
+            });
             //console.log(sourceGroup);
             //console.log(newsItems);
             
@@ -108,53 +117,19 @@ export class RenderSourcesContainers {
             // Append source container to the main element
             element.appendChild(sourceContainerDiv);
         });
+        console.log(data);
+        
+        //RenderSourcesContainers.addEventListeners(newsService);//, data);
       }
-    }
-    /*render(news) {
-        if (!this.sourcesContainer) {
-            console.error(`Element with ID "${sourcesContainerId}" not found.`);
-            return;
-        }
 
-        // Clear any existing content
-        this.sourcesContainer.innerHTML = '';
-
-        // Loop through each source and create the necessary HTML structure
-        news.forEach(newsItem => {
-            const sourceDiv = document.createElement('div');
-            sourceDiv.classList.add('source-container');
-            sourceDiv.innerHTML = `
-            <div class="row justify-content-center mb-4">
-                <div class="col-auto">
-                    <div class="card mb-3" style="max-width: 540px;">
-                        <div class="row g-0">
-                            <div class="col-md-4">
-                                <img src="${newsItem.news.urlToImage || 'fallback-image-url.jpg'}" class="img-fluid rounded-start" alt="${newsItem.news.title || 'No title available'}">
-                            </div>
-                            <div class="col-md-8">
-                                <div class="card-body">
-                                    <h5 class="card-title">${newsItem.news.title}</h5>
-                                        <p class="card-text">${newsItem.news.description ? newsItem.news.description.substring(0, 100) + '...' : 'No description available.'}</p>
-                                        <p class="card-text"><small class="text-body-secondary">Published: ${dayjs(newsItem.news.pubDate).format('ddd, D MMM, YYYY HH:mm')}</small></p>
-                                        <p class="card-text">Source: ${newsItem.source || 'Unknown source'}</p>
-                                        <p class="card-text">Trust meter: ${newsItem.news.trustScore || 'N/A'}</p>
-                                        <a href="#" class="btn btn-primary view-full-story" data-id="${newsItem.news.id}">Read more</a>
-                                        <a href="${newsItem.news.link}" class="btn btn-primary">View source</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-                
-            `;
-            // Append the source container to sourcesContainer
-            this.sourcesContainer.appendChild(sourceDiv);
-        });
+      static addEventListeners(newsService){//, data) {
+        //console.log(data);
+        
+        // const newsLink = document.getElementById(`newsLink${data.source.source.id}`);
+        //     newsLink.addEventListener("click", (event) => {
+        //         event.preventDefault();
+        //         newsService.getNewsFromAllSources(this.newsService.itemsPerPage, 1);
+        //         console.log("News clicked");
+        //     });
     }
 }
-*/
-/* <h3>${source.source}</h3>
-                <p>URL: <a href="${source.sourceUrl}" target="_blank">${source.sourceUrl}</a></p>
-                <p>Feed URL: <a href="${source.feedUrl}" target="_blank">${source.feedUrl}</a></p>
-                <p>Description: ${source.description}</p> */

@@ -23,7 +23,7 @@ export class RssFeedService {
     async fetchRssFeedById(id) {
         try{
             //debugger;
-            console.log(this.apiUrl);
+            //console.log(this.apiUrl);
             const response = await fetch(`${this.apiUrl}/RssFeed/getById/${id}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);

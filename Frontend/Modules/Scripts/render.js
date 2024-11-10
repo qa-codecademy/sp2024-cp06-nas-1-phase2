@@ -1,56 +1,38 @@
 import { RssFeedService } from "../Services/rss-feed-service.js";
+import { RenderSourcesContainers } from "../Scripts/render-sources-containers.js";
 export class Render
 {
-  constructor() {
+  constructor(newsService) {
+    this.newsService = newsService;
     this.rssFeedService = new RssFeedService();
+    this.renderSourcesContainers = new RenderSourcesContainers("sourcesContainer", newsService);
   }
-  /*static main(news, element, newsService)
-  {
-    //console.log(element);
-    element.innerHTML = '';    
-    console.log(news);
-      const newsHtml = news.map(newsItem => `
-        <div class="row justify-content-center mb-4">
-          <div class="col-auto">
-            <div class="card mb-3" style="max-width: 540px;">
-              <div class="row g-0">
-                <div class="col-md-4">
-                  <img src="${newsItem.urlToImage || 'fallback-image-url.jpg'}" class="img-fluid rounded-start" alt="${newsItem.title || 'No title available'}">
-                </div>
-                <div class="col-md-8">
-                  <div class="card-body">
-                    <h5 class="card-title">${newsItem.title}</h5>
-                    <p class="card-text">${newsItem.description ? newsItem.description.substring(0, 100) + '...' : 'No description available.'}</p>
-                    <p class="card-text"><small class="text-body-secondary">Published: ${dayjs(newsItem.pubDate, 'DD-MM-YYYY HH:mm').format('dddd, D MMM, YYYY HH:mm')}</small></p>
-                    <p class="card-text">Source: ${newsItem.feedUrl}</p>
-                    <p class="card-text">Trust meter: ${newsItem.trustScore}</p>
-                    <a href="#" class="btn btn-primary view-full-story" data-id="${newsItem.id}">Read more</a>
-                    <a href="${newsItem.link}" class="btn btn-primary">View source</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      `).join('');
-  
-      // Set the innerHTML once
-      element.innerHTML = newsHtml;
-  
-      // Add event listeners for buttons
-      Render.addEventListeners(newsService);
-    }
-    */
-
     async main(news, element, newsService) {
       // Clear the container
       element.innerHTML = '';
+      // Source title
+      //console.log(news);
       
-      console.log(news[0].rssFeedId);
-      //debugger;
-      let feed1 = await this.rssFeedService.fetchRssFeedById(news[0].rssFeedId);
-      console.log(feed1.source);
-      
+      const titleDiv = document.createElement('div');
+      titleDiv.className = 'source-title';
+      if(news.source !== undefined)
+      {
+        titleDiv.innerHTML = `<h2><a href="#" id="topNewsLink"><i class="bi bi-newspaper"></i> ${news.source.source}</a></h2>`;
+      }
+      else
+      {
+        titleDiv.innerHTML = `<h2><a href="#" id="topNewsLink"><i class="bi bi-newspaper"></i> Top News</a></h2>`;
+      }
+      element.appendChild(titleDiv);
+
+      const topNewsLink = document.getElementById("topNewsLink");
+      topNewsLink.addEventListener("click", (event) => {
+        debugger;
+          event.preventDefault();
+          newsService.mainNews(this.newsService.itemsPerPage, 1, "main");
+          console.log("Top News clicked");
+      });
+
       news.forEach(async newsItem => {
           let feed = await this.rssFeedService.fetchRssFeedById(newsItem.rssFeedId);
           // Outer row container
@@ -158,115 +140,15 @@ export class Render
       Render.addEventListeners(newsService);
   }
 
-renderSources(sources, element) {
-  debugger;
-  console.log(sources);
-  
-  element.innerHTML = '';
-  sources.forEach(sourceGroup => {
-      // Container for each source
-      const newsItems = Array.isArray(sourceGroup.news) ? sourceGroup.news : JSON.parse(sourceGroup.news || '[]');
-
-      const sourceContainerDiv = document.createElement('div');
-      sourceContainerDiv.classList.add('source-container');
-
-      // Source title
-      const sourceNameDiv = document.createElement('div');
-      sourceNameDiv.className = 'source-title';
-      sourceNameDiv.innerHTML = `<h2>${sourceGroup.source.source}</h2>`;
-      sourceContainerDiv.appendChild(sourceNameDiv);
-
-      console.log(sourceGroup);
-      console.log(newsItems);
-      
-      // Render each news item
-      newsItems.forEach(newsItem => {
-        
-          // Main row container for news item
-          const rowDiv = document.createElement('div');
-          rowDiv.classList.add('row', 'justify-content-center', 'mb-4');
-
-          const colDiv = document.createElement('div');
-          colDiv.classList.add('col-auto');
-
-          const cardDiv = document.createElement('div');
-          cardDiv.classList.add('card', 'mb-3');
-          cardDiv.style.maxWidth = '540px';
-
-          const innerRowDiv = document.createElement('div');
-          innerRowDiv.classList.add('row', 'g-0');
-
-          // Image column
-          const imageColDiv = document.createElement('div');
-          imageColDiv.classList.add('col-md-4');
-          const image = document.createElement('img');
-          image.src = newsItem.urlToImage || 'fallback-image-url.jpg';
-          image.classList.add('img-fluid', 'rounded-start');
-          image.alt = newsItem.title || 'No title available';
-          imageColDiv.appendChild(image);
-
-          // Text column
-          const textColDiv = document.createElement('div');
-          textColDiv.classList.add('col-md-8');
-
-          // Card body
-          const cardBodyDiv = document.createElement('div');
-          cardBodyDiv.classList.add('card-body');
-
-          // News item elements
-          const title = document.createElement('h5');
-          title.classList.add('card-title');
-          title.textContent = newsItem.title;
-
-          const description = document.createElement('p');
-          description.classList.add('card-text');
-          description.textContent = newsItem.description ? `${newsItem.description.substring(0, 100)}...` : 'No description available.';
-
-          const pubDate = document.createElement('p');
-          pubDate.classList.add('card-text');
-          const dateSmall = document.createElement('small');
-          dateSmall.classList.add('text-body-secondary');
-          dateSmall.textContent = `Published: ${dayjs(newsItem.pubDate, 'DD-MM-YYYY HH:mm').format('dddd, D MMM, YYYY HH:mm')}`;
-          pubDate.appendChild(dateSmall);
-
-          const sourceText = document.createElement('p');
-          sourceText.classList.add('card-text');
-          sourceText.textContent = `Source: ${sourceGroup.source || 'Unknown source'}`;
-
-          const trustMeter = document.createElement('p');
-          trustMeter.classList.add('card-text');
-          trustMeter.textContent = `Trust meter: ${newsItem.trustScore || 'N/A'}`;
-
-          // Buttons
-          const readMoreBtn = document.createElement('a');
-          readMoreBtn.href = '#';
-          readMoreBtn.classList.add('btn', 'btn-primary', 'view-full-story');
-          readMoreBtn.dataset.id = newsItem.id;
-          readMoreBtn.textContent = 'Read more';
-
-          const viewSourceBtn = document.createElement('a');
-          viewSourceBtn.href = newsItem.link;
-          viewSourceBtn.classList.add('btn', 'btn-primary');
-          viewSourceBtn.textContent = 'View source';
-
-          // Append elements to card body
-          cardBodyDiv.append(title, description, pubDate, sourceText, trustMeter, readMoreBtn, viewSourceBtn);
-
-          // Assemble card structure
-          textColDiv.appendChild(cardBodyDiv);
-          innerRowDiv.append(imageColDiv, textColDiv);
-          cardDiv.appendChild(innerRowDiv);
-          colDiv.appendChild(cardDiv);
-          rowDiv.appendChild(colDiv);
-          sourceContainerDiv.appendChild(rowDiv);
-      });
-
-      // Append source container to the main element
-      element.appendChild(sourceContainerDiv);
-  });
+renderSources(data, element) {
+  this.renderSourcesContainers.renderSources(data, element);
 }
 
-  static addEventListeners()
+renderBySource(sources, element) {
+  this.renderSourcesContainers.renderSources(sources, element);
+}
+
+  static addEventListeners(newsService)
   {
     document.querySelectorAll('.view-full-story').forEach(button =>
     {
@@ -277,5 +159,12 @@ renderSources(sources, element) {
         newsService.viewFullStory(id);
       });
     });
+
+  //   document.getElementById("topNewsLink").addEventListener("click", (event) => {
+  //     event.preventDefault(); // Prevents the default behavior if you don't want the page to reload
+  //     // Your click handling logic here, e.g., navigate to top news section
+  //     newsService.mainNews(newsService.itemsPerPage, 1);
+  //     console.log("Top News clicked");
+  // });
   }
 }

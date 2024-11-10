@@ -26,7 +26,6 @@ export class ApiService {
 			console.error(error);
 		}
 	}
-
 	async fetchCommentsFOrArticle(articleId) {
 		try {
 			const response = await fetch(`${this.apiUrl}/Article/getNewsById/${articleId}`);
@@ -82,9 +81,9 @@ export class ApiService {
 			return [];
 		}
 	}
-
 	async fetchBySources(sourceId, pageNumber, pageSize) {
 		try {
+			debugger;
 			const response = await fetch(`${this.apiUrl}/Article/getNewsBySource/${sourceId}?pageNumber=${pageNumber}&pageSize=${pageSize}`);
 			if (!response.ok) {
 				throw new Error(`Failed to fetch sources: ${response.status}`);

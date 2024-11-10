@@ -2,9 +2,9 @@
 import { Article } from "../Models/article.js";
 import { RenderFullStory } from "../Scripts/render-full-story.js";
 import { Render } from "../Scripts/render.js";
-import { PaginationService } from "../pagination-service.js";
+import { RenderPagination } from "../render-pagination.js";
 import { RenderFeedback } from "../Scripts/render-feedback.js";
-import { RenderSourcesContainers } from "../Scripts/render-sources-containers.js";
+//import { RenderSourcesContainers } from "../Scripts/render-sources-containers.js";
 import { RssFeed } from "../Models/rssFeed.js";
 
 export class NewsService {
@@ -12,10 +12,10 @@ export class NewsService {
 		this.apiService = apiService;
 		this.rssFeedService = rssFeedService;
 
-		this.paginationService = new PaginationService(this);
+		this.renderPagination = new RenderPagination(this);
 		this.RenderFeedback = new RenderFeedback();
-		this.render = new Render();
-		this.renderSourcesContainers = new RenderSourcesContainers("sourcesContainer");
+		this.render = new Render(this);
+		//this.renderSourcesContainers = new RenderSourcesContainers("sourcesContainer");
 		//this.rssFeedService = new RssFeedService();
 
 		this.notification = document.getElementById("notification");
@@ -33,15 +33,16 @@ export class NewsService {
 		this.newsArray = [];
 		this.mappedNews = [];
 
-		this.currentPage = this.paginationService.currentPage;
-		this.itemsPerPage = this.paginationService.itemsPerPage;
+		//this.currentPage = this.paginationService.currentPage;
+		this.itemsPerPage = 10;
 
+		this.initializeEventHandlers();
 		//debugger;
 		//this.Test();
-        //this.mainNews();
+        //this.mainNews(this.itemsPerPage, 1);
         this.getTopThreeNews();
         this.getTopThreeNewsFromAllSources();
-		this.initializeEventHandlers();
+		this.hideElements();
 	}
 
 	async Test()
@@ -58,39 +59,94 @@ export class NewsService {
 		// const sourceById = this.rssFeedService.fetchRssFeedById(article.rssFeedId);
 		// console.log(sourceById);
 	}
-	async mainNews() {
+	async mainNews(itemsPerPage, page, calledFrom, sourceId) {
 		try {   
-            const pageNumber = 1; // Requesting the first page
-            const pageSize = 3;   // Setting the page size to 3 to get the top three items
-			const newsData = await this.apiService.fetchRssFeed(pageNumber, pageSize);
-			console.log("================================================");
-
-			//console.log(newsData);
-			console.log(newsData.items);
-
+			console.log("Items per page from Main: " + itemsPerPage);
+			
+            //const pageNumber = 1; // Requesting the first page
+            const pageSize = itemsPerPage;   // Setting the page size to 3 to get the top three items
+			let newsData = null;
+			debugger;
+			if(calledFrom === "main" || calledFrom === "update")
+			{
+				newsData = await this.apiService.fetchRssFeed(page, pageSize);
+				console.log(newsData);
+				
+			}
+			if(calledFrom === "source")
+			{
+				newsData = await this.apiService.fetchBySources(sourceId, page, pageSize);
+				console.log(newsData);
+			}
+			//newsData = await this.apiService.fetchRssFeed(page, pageSize);
 			if (newsData.length === 0) {
 				throw new Error("No news found! Try again");
 			}
 
 			this.newsArray = await Promise.all(newsData.items.map(async (item) => {
-				const newsIitem = new Article(item);
+				const newsIitem = new Article(item);				
 				const trustScoreData = await this.apiService.fetchTrustScore(newsIitem.id);
 				newsIitem.trustScore = trustScoreData.trustScore;
 				return newsIitem;
-			}));
-
-			this.currentPage = 1;
+			}));			
 			
-			this.renderPage(this.currentPage, this.cardContainer, this.newsArray);
-
-            const sources = await this.rssFeedService.fetchSources();
-            console.log(sources);
+			this.currentPage = newsData.pageNumber;
+			console.log("Current page from Main: " + this.currentPage);
+			
+			this.sourcesContainer.innerHTML = "";
+			this.renderPage(this.cardContainer, this.newsArray, this);
+			this.renderPagination.updatePaginationData(
+				newsData.totalPages,
+				newsData.pageNumber,
+				newsData.hasPreviousPage,
+				newsData.hasNextPage);
+			this.showElements();
+            //const sources = await this.rssFeedService.fetchSources();
+            //console.log(sources);
 		} catch (error) {
 			this.notification.innerHTML = `<div class='alert-danger'>${error.message}</div>`;
 		} finally {
-			//this.hideSpinner();
+			this.hideSpinner();
 		}
 	}
+
+	async getAllNewsFromSource(itemsPerPage, page, sourceId) {
+		this.mainNews(itemsPerPage, page, "source", sourceId);
+	}
+	async getAllNewsFromSource1(itemsPerPage, page, sourceId) {
+        try {
+            
+			const sources = await this.rssFeedService.fetchSources();
+			const foundSource = await sources.find(s => s.id === sourceId);
+
+			if (!foundSource) {
+				throw new Error("Source not found!");
+			}
+			const source = new RssFeed(foundSource);
+
+			const newsData = await this.apiService.fetchBySources(sourceId, page, itemsPerPage);
+			const articles = newsData.map(article => new Article(article));
+			const structuredSources = {
+					source,
+					news: articles
+				};
+
+				console.log(structuredSources);
+				
+			this.renderPage(this.cardContainer, structuredSources, this);
+			this.renderPagination.updatePaginationData(
+				newsData.totalPages,
+				newsData.pageNumber,
+				newsData.hasPreviousPage,
+				newsData.hasNextPage
+			);
+
+			this.showElements();
+        } catch (error) {
+            console.error("Error fetching top news from all sources:", error);
+            this.notification.innerHTML = `<div class='alert-danger'>${error.message}</div>`;
+        }
+    }
 
 	async getSourceByName(name){
 		try {
@@ -99,27 +155,20 @@ export class NewsService {
 			
 			return source;
 		} catch (error) {
-			//console.error(error);
+			console.error(error);
 		}
 	}
     async getTopThreeNews() {
         const pageNumber = 1; // Requesting the first page
         const pageSize = 3;   // Setting the page size to 3 to get the top three items
-        
+        //debugger;
         try {
             const newsData = await this.apiService.fetchTopThreeNews(pageNumber, pageSize);
-
 			if (newsData.length === 0) {
 				throw new Error("No news found! Try again");
 			}
-    
             this.newsArray = newsData.items;
-			this.currentPage = 1;
-			this.renderPage(this.currentPage, this.cardContainer, this.newsArray);
-
-            const sources = await this.rssFeedService.fetchSources();
-            console.log(sources);
-            // this.renderSourcesContainers(this.sourcesContainer).render(sources);
+			this.renderPage(this.cardContainer, this.newsArray, this);
         } catch (error) {
             console.error("Error fetching top news:", error);
         }
@@ -140,7 +189,8 @@ export class NewsService {
 				};
 			}));
 			//debugger;
-			this.renderSourcesContainers.renderSources(structuredSources, this.sourcesContainer);
+			//this.renderSourcesContainers.renderSources(structuredSources, this.sourcesContainer);
+			this.render.renderSources(structuredSources, this.sourcesContainer);
         } catch (error) {
             console.error("Error fetching top news from all sources:", error);
             this.notification.innerHTML = `<div class='alert-danger'>${error.message}</div>`;
@@ -180,14 +230,11 @@ export class NewsService {
 
 	//Pagination
 	//https://webdesign.tutsplus.com/pagination-with-vanilla-javascript--cms-41896t
-	renderPage(page, container = this.cardContainer, newsData = this.newsArray, rssFeedId) {
+	renderPage(container, newsData, newsService) {
 		//debugger;
 		this.showSpinner();
-		const start = (page - 1) * this.itemsPerPage;
-		const end = start + this.itemsPerPage;
-		const newsToRender = newsData.slice(start, end);
-		this.render.main(newsToRender, container, rssFeedId);
-		this.paginationService.renderPagination();
+		this.render.main(newsData, container, newsService);
+		//this.paginationService.renderPagination();
 		this.hideSpinner();
 	}
 
@@ -216,6 +263,7 @@ export class NewsService {
 					const itemsPerPage = parseInt(
 						event.target.getAttribute("data-value")
 					);
+					console.log("Items per page from EventHandler: " + itemsPerPage);
 					this.updateItemsPerPage(itemsPerPage);
 				}
 			});
@@ -293,11 +341,14 @@ export class NewsService {
 	updateItemsPerPage(itemsPerPage) {
 		this.itemsPerPage = itemsPerPage;
 		this.currentPage = 1;
-		this.renderPage(this.currentPage);
+		//this.renderPage(this.currentPage);
+		console.log("Items per page from updatePages: " + itemsPerPage);		
+		
+		this.mainNews(itemsPerPage, 1, "update");
 	}
 
 	showSpinner() {
-		console.log("Show spinner called");
+		//console.log("Show spinner called");
 		this.spinnerWrapper.style.display = "flex";
 	}
 
