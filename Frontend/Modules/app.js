@@ -8,7 +8,8 @@ dayjs.extend(window.dayjs_plugin_customParseFormat);
 dayjs.locale('mk');
 const adsInstance = new Ads();
 const apiService = new ApiService();
-const newsService = new NewsService();
 const rssFeedService = new RssFeedService();
+const newsService = new NewsService(apiService, rssFeedService);
 
 window.newsService = newsService;
+//window.apiService = apiService;

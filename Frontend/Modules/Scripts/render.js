@@ -1,8 +1,9 @@
-import { RssFeedService } from "../Services/rss-feed-service";
-
+import { RssFeedService } from "../Services/rss-feed-service.js";
 export class Render
 {
-  
+  constructor() {
+    this.rssFeedService = new RssFeedService();
+  }
   /*static main(news, element, newsService)
   {
     //console.log(element);
@@ -41,12 +42,17 @@ export class Render
     }
     */
 
-    static main(news, element, newsService) {
+    async main(news, element, newsService) {
       // Clear the container
       element.innerHTML = '';
-      debugger;
-      news.forEach(newsItem => {
-          let feed = RssFeedService.getFeedById(newsItem.rssFeedId);
+      
+      console.log(news[0].rssFeedId);
+      //debugger;
+      let feed1 = await this.rssFeedService.fetchRssFeedById(news[0].rssFeedId);
+      console.log(feed1.source);
+      
+      news.forEach(async newsItem => {
+          let feed = await this.rssFeedService.fetchRssFeedById(newsItem.rssFeedId);
           // Outer row container
           const row = document.createElement('div');
           row.className = 'row justify-content-center mb-4';
@@ -106,12 +112,12 @@ export class Render
           // Source
           const source = document.createElement('p');
           source.className = 'card-text';
-          source.textContent = `Source: ${feed}`;
+          source.textContent = `Source: ${feed.source}`;
   
           // Trust meter
           const trustMeter = document.createElement('p');
           trustMeter.className = 'card-text';
-          trustMeter.textContent = `Trust meter: ${newsItem.trustScore}`;
+          trustMeter.textContent = `Trust meter: ${newsItem.trustScore || 'N/A'}`;
   
           // "Read more" button
           const readMoreBtn = document.createElement('a');
@@ -152,22 +158,29 @@ export class Render
       Render.addEventListeners(newsService);
   }
 
-
-static renderSources(sources, element) {
+renderSources(sources, element) {
+  debugger;
+  console.log(sources);
+  
   element.innerHTML = '';
   sources.forEach(sourceGroup => {
       // Container for each source
+      const newsItems = Array.isArray(sourceGroup.news) ? sourceGroup.news : JSON.parse(sourceGroup.news || '[]');
+
       const sourceContainerDiv = document.createElement('div');
       sourceContainerDiv.classList.add('source-container');
 
       // Source title
       const sourceNameDiv = document.createElement('div');
       sourceNameDiv.className = 'source-title';
-      sourceNameDiv.innerHTML = `<h2>${sourceGroup.source}</h2>`;
+      sourceNameDiv.innerHTML = `<h2>${sourceGroup.source.source}</h2>`;
       sourceContainerDiv.appendChild(sourceNameDiv);
 
+      console.log(sourceGroup);
+      console.log(newsItems);
+      
       // Render each news item
-      sourceGroup.news.forEach(newsItem => {
+      newsItems.forEach(newsItem => {
         
           // Main row container for news item
           const rowDiv = document.createElement('div');

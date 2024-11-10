@@ -6,10 +6,10 @@ export class Ads
     {
         this.ads =
         [
-            { path: 'Media/adSample1.gif' },
-            { path: 'Media/adSample2.gif' },
-            { path: 'Media/adSample3.webp' },
-            { path: 'Media/adSample4.gif' }
+            { path: 'Images/adSample1.gif' },
+            { path: 'Images/adSample2.gif' },
+            { path: 'Images/adSample3.webp' },
+            { path: 'Images/adSample4.gif' }
         ];
         
         this.adContainerIds = ['left-ad-1', 'left-ad-2', 'right-ad-1', 'right-ad-2'];

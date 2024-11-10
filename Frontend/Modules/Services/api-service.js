@@ -1,4 +1,4 @@
-import { config } from "../../Utils/config";
+import { config } from "../../Utils/config.js";
 
 export class ApiService {
 	constructor(){
@@ -23,9 +23,10 @@ export class ApiService {
 			
 			return jsonData;
 		} catch (error) {
-			//console.error(error);
+			console.error(error);
 		}
 	}
+
 	async fetchCommentsFOrArticle(articleId) {
 		try {
 			const response = await fetch(`${this.apiUrl}/Article/getNewsById/${articleId}`);
@@ -78,20 +79,6 @@ export class ApiService {
 			return jsonData;
 		} catch (error) {
 			console.error("Error fetching top three news:", error);
-			return [];
-		}
-	}
-
-	async fetchSources() {
-		try {
-			const response = await fetch(`${this.apiUrl}/RssFeed/getAll`);
-			if (!response.ok) {
-				throw new Error(`Failed to fetch sources: ${response.status}`);
-			}
-			const sourcesData = await response.json();
-			return sourcesData;
-		} catch (error) {
-			console.error("Error fetching sources:", error);
 			return [];
 		}
 	}
