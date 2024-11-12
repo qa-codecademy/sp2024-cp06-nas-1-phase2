@@ -155,7 +155,7 @@ namespace Services.Implementations
                             Description = StripHtmlTags(item.Element("description")?.Value!),
                             Link = item.Element("link")?.Value!,
                             Author = item.Element("author")?.Value!,
-                            PubDate = pubDate.ToString("dd-MM-yyyy HH:mm", CultureInfo.CurrentCulture),
+                            PubDate = pubDate,//.ToString("dd-MM-yyyy HH:mm", CultureInfo.CurrentCulture),
                             FeedUrl = rssFeed.FeedUrl,
                             RssFeedId = rssFeed.Id,
                             UrlToImage = GetImageUrl(item, image) // Extract image URL based on the RssFeed's properties

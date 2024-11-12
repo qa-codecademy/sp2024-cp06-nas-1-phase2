@@ -25,21 +25,25 @@ namespace Services.Implementations
         public async Task<PaginatedResult<ArticleDto>> GetPagedArticlesAsync(int pageNumber, int pageSize)
         {
             var totalCount = await _articleRepository.GetTotalCountAsync(); // Method to get total articles count
-            var articles = await _articleRepository.GetPaginatedAsync(pageNumber, pageSize);
+            var articles = await _articleRepository.GetPaginatedAllArticlesAsync(pageNumber, pageSize);
 
             var articleDtos = articles.Select(article => _mapper.Map<ArticleDto>(article));
 
             return new PaginatedResult<ArticleDto>(articleDtos, totalCount, pageNumber, pageSize);
         }
-        public async Task<IEnumerable<ArticleDto>> GetAllArticlesBySourceAsync(int rssFeedId)
+        public async Task<PaginatedResult<ArticleDto>> GetAllArticlesByRssFeedAsync(int rssFeedId, int pageNumber, int pageSize)
         {
             try
             {
                 //var articles = await _articleRepository.GetAllAsync();
                 //var filteredArticles = articles.Where(x => x.RssFeedId == rssFeedId);
                 //return _mapper.Map<IEnumerable<ArticleDto>>(filteredArticles);
-                var articles = await _articleRepository.GetArticlesByRssSourceIdAsync(rssFeedId);
-                return _mapper.Map<IEnumerable<ArticleDto>>(articles);
+
+                var totalCount = await _articleRepository.GetTotalCountByRssFeedIdAsync(rssFeedId);
+                var articles = await _articleRepository.GetPaginatedArticlesByRssFeedIdAsync(rssFeedId, pageNumber, pageSize);
+
+                var articleDtos = articles.Select(article => _mapper.Map<ArticleDto>(article));
+                return new PaginatedResult<ArticleDto>(articleDtos, totalCount, pageNumber, pageSize);
             }
             catch (Exception ex)
             {
@@ -87,7 +91,7 @@ namespace Services.Implementations
         }
         public async Task<IEnumerable<ArticleDto>> GetPagedArticlesBySourceAsync(int rssFeedId, int pageNumber, int pageSize)
         {
-            var articles = await _articleRepository.GetPagedArticlesByRssSourceIdAsync(rssFeedId, pageNumber, pageSize);
+            var articles = await _articleRepository.GetPaginatedArticlesByRssFeedIdAsync(rssFeedId, pageNumber, pageSize);
             var result = _mapper.Map<IEnumerable<ArticleDto>>(articles);
             return result;
         }
@@ -97,5 +101,11 @@ namespace Services.Implementations
             var mappedArticle = _mapper.Map<ArticleDto>(article);
             return mappedArticle;
         }
+
+        //private async Task<int[]> getPagination(int pageNumber, int pageSize)
+        //{
+        //    var totalCount = await _articleRepository.GetTotalCountAsync(); // Method to get total articles count
+        //    //var articles = await _articleRepository.GetPaginatedAllArticlesAsync(pageNumber, pageSize);
+        //}
     }
 }
