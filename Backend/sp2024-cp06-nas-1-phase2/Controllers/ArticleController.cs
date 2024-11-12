@@ -49,8 +49,8 @@ namespace sp2024_cp06_nas_1_phase2.Controllers
         {
             try
             {
-                var result = await _articleService.GetPagedArticlesBySourceAsync(rssFeedId, pageNumber, pageSize);
-                return Ok(result);
+                var paginatedResult = await _articleService.GetPagedArticlesBySourceAsync(rssFeedId, pageNumber, pageSize);
+                return Ok(paginatedResult);
             }
             catch (Exception ex)
             {

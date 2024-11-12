@@ -31,7 +31,7 @@ namespace Services.Implementations
 
             return new PaginatedResult<ArticleDto>(articleDtos, totalCount, pageNumber, pageSize);
         }
-        public async Task<PaginatedResult<ArticleDto>> GetAllArticlesByRssFeedAsync(int rssFeedId, int pageNumber, int pageSize)
+        public async Task<PaginatedResult<ArticleDto>> GetPagedArticlesBySourceAsync(int rssFeedId, int pageNumber, int pageSize)
         {
             try
             {
@@ -89,12 +89,7 @@ namespace Services.Implementations
                 throw new Exception("Error adding articles.", ex);
             }
         }
-        public async Task<IEnumerable<ArticleDto>> GetPagedArticlesBySourceAsync(int rssFeedId, int pageNumber, int pageSize)
-        {
-            var articles = await _articleRepository.GetPaginatedArticlesByRssFeedIdAsync(rssFeedId, pageNumber, pageSize);
-            var result = _mapper.Map<IEnumerable<ArticleDto>>(articles);
-            return result;
-        }
+        
         public async Task<ArticleDto> GetArticleByIdAsync(int id)
         {
             var article = await _articleRepository.GetByIdAsync(id);
