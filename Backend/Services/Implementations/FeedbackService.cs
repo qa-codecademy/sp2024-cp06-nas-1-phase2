@@ -31,7 +31,7 @@ namespace Services.Implementations
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while getting comments.");
+                _logger.LogError(ex, "Error while getting feedback.");
                 throw;
             }
         }
