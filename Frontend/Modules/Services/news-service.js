@@ -63,22 +63,19 @@ export class NewsService {
 		try {   
 			console.log("Items per page from Main: " + itemsPerPage);
 			
-            //const pageNumber = 1; // Requesting the first page
-            const pageSize = itemsPerPage;   // Setting the page size to 3 to get the top three items
+            const pageSize = itemsPerPage;
 			let newsData = null;
-			debugger;
 			if(calledFrom === "main" || calledFrom === "update")
 			{
 				newsData = await this.apiService.fetchRssFeed(page, pageSize);
-				console.log(newsData);
+				//console.log(newsData);
 				
 			}
 			if(calledFrom === "source")
 			{
 				newsData = await this.apiService.fetchBySources(sourceId, page, pageSize);
-				console.log(newsData);
+				//console.log(newsData);
 			}
-			//newsData = await this.apiService.fetchRssFeed(page, pageSize);
 			if (newsData.length === 0) {
 				throw new Error("No news found! Try again");
 			}
@@ -101,8 +98,6 @@ export class NewsService {
 				newsData.hasPreviousPage,
 				newsData.hasNextPage);
 			this.showElements();
-            //const sources = await this.rssFeedService.fetchSources();
-            //console.log(sources);
 		} catch (error) {
 			this.notification.innerHTML = `<div class='alert-danger'>${error.message}</div>`;
 		} finally {
@@ -131,7 +126,7 @@ export class NewsService {
 					news: articles
 				};
 
-				console.log(structuredSources);
+				//console.log(structuredSources);
 				
 			this.renderPage(this.cardContainer, structuredSources, this);
 			this.renderPagination.updatePaginationData(
@@ -179,9 +174,11 @@ export class NewsService {
             
 			const sources = await this.rssFeedService.fetchSources();
 			const structuredSources = await Promise.all(sources.map(async (item) => {
+				
 				const source = new RssFeed(item);
 				const newsData = await this.apiService.fetchBySources(source.id, pageNumber, pageSize);
-				const articles = newsData.map(article => new Article(article));
+				
+				const articles = newsData.items.map(article => new Article(article));
 				
 				return {
 					source,
@@ -213,9 +210,6 @@ export class NewsService {
 		}
 		return newsResult;
 	}
-	mapNewsData(news) {
-		return news.map((newsItem, index) => new Article({ ...newsItem, id: index }));
-	}
 
 	async archiveNews() {
 		// debugger;
@@ -238,11 +232,12 @@ export class NewsService {
 		this.hideSpinner();
 	}
 
-	async viewFullStory(id) {
+	async viewFullStory(newsItem) {
 		try {
-			const newsItem = await this.newsArray.find((item) => item.id === id);
+			
 			if (newsItem) {
 				this.cardContainer.style.display = "none";
+				this.sourcesContainer.style.display = "none";
 				this.fullStoryContainer.style.display = "block";
 				this.hideElements();
 				RenderFullStory.fullStory(newsItem, this.fullStoryContent);
@@ -253,7 +248,15 @@ export class NewsService {
 			console.error("Error viewing full story:", error);
 		}
 	}
-
+	async saveFeedback(articleId, rating, comment, username) {
+		try {
+			await this.apiService.saveFeedback(articleId, rating, comment, username);
+			this.notification.innerHTML = `<div class='alert-success'>Feedback saved successfully!</div>`;
+		} catch (error) {
+			console.error("Error saving feedback:", error);
+			this.notification.innerHTML = `<div class='alert-danger'>${error.message}</div>`;
+		}
+	}
 	initializeEventHandlers() {
 		//items per page dropdown click
 		document
@@ -323,6 +326,7 @@ export class NewsService {
 	hideFullStory() {
 		this.fullStoryContainer.style.display = "none";
 		this.cardContainer.style.display = "block";
+		this.sourcesContainer.style.display = "grid";
 		this.showElements();
 	}
 

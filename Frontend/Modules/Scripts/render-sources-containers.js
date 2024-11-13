@@ -4,8 +4,6 @@ export class RenderSourcesContainers {
         this.newsService = newsService;
     }
     async renderSources(data, element) {
-        //debugger;
-        //console.log(data);
         
         element.innerHTML = '';
         data.forEach(sourceGroup => {
@@ -29,8 +27,6 @@ export class RenderSourcesContainers {
                 this.newsService.getAllNewsFromSource(this.newsService.itemsPerPage, 1, sourceId);
                 console.log(`News link clicked for source: ${sourceName}`);
             });
-            //console.log(sourceGroup);
-            //console.log(newsItems);
             
             // Render each news item
             newsItems.forEach(newsItem => {
@@ -79,7 +75,8 @@ export class RenderSourcesContainers {
                 pubDate.classList.add('card-text');
                 const dateSmall = document.createElement('small');
                 dateSmall.classList.add('text-body-secondary');
-                dateSmall.textContent = `Published: ${dayjs(newsItem.pubDate, 'DD-MM-YYYY HH:mm').format('dddd, D MMM, YYYY HH:mm')}`;
+                
+                dateSmall.textContent = `Published: ${dayjs(newsItem.pubDate).format('dddd, D MMM, YYYY HH:mm')}`;
                 pubDate.appendChild(dateSmall);
       
                 const sourceText = document.createElement('p');
@@ -112,14 +109,18 @@ export class RenderSourcesContainers {
                 colDiv.appendChild(cardDiv);
                 rowDiv.appendChild(colDiv);
                 sourceContainerDiv.appendChild(rowDiv);
+
+                readMoreBtn.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    //const id = parseInt(this.getAttribute('data-id'));
+                    newsService.viewFullStory(newsItem);
+                });
             });
       
             // Append source container to the main element
             element.appendChild(sourceContainerDiv);
+            
         });
-        console.log(data);
-        
-        //RenderSourcesContainers.addEventListeners(newsService);//, data);
       }
 
       static addEventListeners(newsService){//, data) {

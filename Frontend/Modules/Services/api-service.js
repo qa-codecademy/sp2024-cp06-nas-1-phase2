@@ -67,7 +67,6 @@ export class ApiService {
             return [];
         }
     }
-
 	async fetchTopThreeNews(pageNumber, pageSize) {
 		try {
 			const response = await fetch(`${this.apiUrl}/Article/getNews?pageNumber=${pageNumber}&pageSize=${pageSize}`);
@@ -83,7 +82,7 @@ export class ApiService {
 	}
 	async fetchBySources(sourceId, pageNumber, pageSize) {
 		try {
-			debugger;
+			//debugger;
 			const response = await fetch(`${this.apiUrl}/Article/getNewsBySource/${sourceId}?pageNumber=${pageNumber}&pageSize=${pageSize}`);
 			if (!response.ok) {
 				throw new Error(`Failed to fetch sources: ${response.status}`);
@@ -93,6 +92,43 @@ export class ApiService {
 		} catch (error) {
 			console.error("Error fetching sources:", error);
 			return [];
+		}
+	}
+	async saveFeedback(articleId, rating, comment, username) {
+		try {
+			if(!articleId)
+			{
+				if(!rating)
+				{
+					const response = await fetch(`${this.apiUrl}/Feedback/saveFeedback`, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ articleId, rating }),
+				});
+				if (!response.ok) {
+					throw new Error(`Failed to save feedback: ${response.status}`);
+				}}
+				if (!comment) {
+					const response = await fetch(`${this.apiUrl}/Comments`, {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({ articleId, comment, username }),
+					});
+					if (!response.ok) {
+						throw new Error(`Failed to save feedback: ${response.status}`);
+					}
+				}
+				
+				
+
+			}
+			
+		} catch (error) {
+			console.error("Error saving feedback:", error);
 		}
 	}
 }

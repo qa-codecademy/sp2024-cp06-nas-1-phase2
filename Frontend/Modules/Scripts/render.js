@@ -8,10 +8,8 @@ export class Render
     this.renderSourcesContainers = new RenderSourcesContainers("sourcesContainer", newsService);
   }
     async main(news, element, newsService) {
-      // Clear the container
+      
       element.innerHTML = '';
-      // Source title
-      //console.log(news);
       
       const titleDiv = document.createElement('div');
       titleDiv.className = 'source-title';
@@ -88,7 +86,7 @@ export class Render
           pubDate.className = 'card-text';
           const pubDateSmall = document.createElement('small');
           pubDateSmall.className = 'text-body-secondary';
-          pubDateSmall.textContent = `Published: ${dayjs(newsItem.pubDate, 'DD-MM-YYYY HH:mm').format('dddd, D MMM, YYYY HH:mm')}`;
+          pubDateSmall.textContent = `Published: ${dayjs(newsItem.pubDate).format('dddd, D MMM, YYYY HH:mm')}`;
           pubDate.appendChild(pubDateSmall);
   
           // Source
@@ -134,10 +132,22 @@ export class Render
   
           // Append row to the main container
           element.appendChild(row);
+          
+          readMoreBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            //const id = parseInt(this.getAttribute('data-id'));
+            newsService.viewFullStory(newsItem);
+        });
       });
   
       // Add event listeners for buttons
-      Render.addEventListeners(newsService);
+      const delay = ms => new Promise(res => setTimeout(res, ms));
+      const yourFunction = async () => {
+        await delay(5000);
+        Render.addEventListeners(newsService);
+      };
+      //yourFunction();
+      
   }
 
 renderSources(data, element) {
@@ -150,21 +160,16 @@ renderBySource(sources, element) {
 
   static addEventListeners(newsService)
   {
-    document.querySelectorAll('.view-full-story').forEach(button =>
-    {
-      button.addEventListener('click', function (event)
-      {
-        event.preventDefault();
-        const id = parseInt(this.getAttribute('data-id'));
-        newsService.viewFullStory(id);
-      });
-    });
-
-  //   document.getElementById("topNewsLink").addEventListener("click", (event) => {
-  //     event.preventDefault(); // Prevents the default behavior if you don't want the page to reload
-  //     // Your click handling logic here, e.g., navigate to top news section
-  //     newsService.mainNews(newsService.itemsPerPage, 1);
-  //     console.log("Top News clicked");
-  // });
+    // const buttons = document.querySelectorAll('.view-full-story');
+    // console.log('Buttons found:', buttons);  // Check if buttons are found
+    // document.querySelectorAll('.view-full-story').forEach(button =>
+    // {
+    //   button.addEventListener('click', function (event)
+    //   {
+    //     event.preventDefault();
+    //     const id = parseInt(this.getAttribute('data-id'));
+    //     newsService.viewFullStory(id);
+    //   });
+    // });
   }
 }
