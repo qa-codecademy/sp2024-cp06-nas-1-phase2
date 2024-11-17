@@ -28,19 +28,28 @@ export class RenderSourcesContainers {
                 console.log(`News link clicked for source: ${sourceName}`);
             });
             
+            // Create a row container for the cards
+            const rowDiv = document.createElement('div');
+            rowDiv.classList.add('row', 'g-4'); // Grid for responsive layout, with gap between items
+
             // Render each news item
             newsItems.forEach(newsItem => {
               
                 // Main row container for news item
-                const rowDiv = document.createElement('div');
-                rowDiv.classList.add('row', 'justify-content-center', 'mb-4');
+                // const rowDiv = document.createElement('div');
+                // rowDiv.classList.add('row', 'justify-content-center', 'mb-4');
       
                 const colDiv = document.createElement('div');
                 colDiv.classList.add('col-auto');
+                //colDiv.classList.add('col');
       
                 const cardDiv = document.createElement('div');
+                // cardDiv.classList.add('card', 'mb-3');
+                // cardDiv.style.maxWidth = '540px';
                 cardDiv.classList.add('card', 'mb-3');
-                cardDiv.style.maxWidth = '540px';
+                cardDiv.style.maxWidth = '100%'; // Ensure card takes up full width of its column
+                cardDiv.style.border = '1px solid #ddd'; // Optional: Define card borders
+                cardDiv.style.padding = '10px'; // Optional: Add padding for smaller cards
       
                 const innerRowDiv = document.createElement('div');
                 innerRowDiv.classList.add('row', 'g-0');
@@ -90,7 +99,7 @@ export class RenderSourcesContainers {
                 // Buttons
                 const readMoreBtn = document.createElement('a');
                 readMoreBtn.href = '#';
-                readMoreBtn.classList.add('btn', 'btn-primary', 'view-full-story');
+                readMoreBtn.classList.add('btn', 'btn-success', 'view-full-story');
                 readMoreBtn.dataset.id = newsItem.id;
                 readMoreBtn.textContent = 'Read more';
       
@@ -108,7 +117,7 @@ export class RenderSourcesContainers {
                 cardDiv.appendChild(innerRowDiv);
                 colDiv.appendChild(cardDiv);
                 rowDiv.appendChild(colDiv);
-                sourceContainerDiv.appendChild(rowDiv);
+                //sourceContainerDiv.appendChild(rowDiv);
 
                 readMoreBtn.addEventListener('click', (event) => {
                     event.preventDefault();
@@ -117,6 +126,7 @@ export class RenderSourcesContainers {
                 });
             });
       
+            sourceContainerDiv.appendChild(rowDiv);
             // Append source container to the main element
             element.appendChild(sourceContainerDiv);
             

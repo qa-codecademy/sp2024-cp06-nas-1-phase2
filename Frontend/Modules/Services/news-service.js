@@ -222,13 +222,10 @@ export class NewsService {
 		this.showElements();
 	}
 
-	//Pagination
-	//https://webdesign.tutsplus.com/pagination-with-vanilla-javascript--cms-41896t
 	renderPage(container, newsData, newsService) {
 		//debugger;
 		this.showSpinner();
 		this.render.main(newsData, container, newsService);
-		//this.paginationService.renderPagination();
 		this.hideSpinner();
 	}
 

@@ -5,6 +5,7 @@
     margin-top: 20px;
 }
 
+
 .sources-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* 2 columns */
@@ -58,6 +59,27 @@
     overflow: hidden;
     transition: transform 0.3s;
     cursor: default;
+}
+
+.card-body .btn {
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+  .card-body .btn:last-child {
+    margin-right: 0;
+}
+
+.card-body .btn {
+    width: auto;
+  }
+
+  @media (max-width: 768px) {
+    .card-body .btn {
+      width: 100%;
+      margin-right: 0;
+      margin-bottom: 10px;
+    }
 }
 
 .card:hover {

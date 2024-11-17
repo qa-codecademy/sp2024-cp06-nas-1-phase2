@@ -31,6 +31,7 @@ export class Render
           console.log("Top News clicked");
       });
 
+      
       news.forEach(async newsItem => {
           let feed = await this.rssFeedService.fetchRssFeedById(newsItem.rssFeedId);
           // Outer row container
@@ -40,11 +41,12 @@ export class Render
           // Column container
           const col = document.createElement('div');
           col.className = 'col-auto';
+          //col.className = 'col-md-6 col-lg-4';
   
           // Card container
           const card = document.createElement('div');
           card.className = 'card mb-3';
-          card.style.maxWidth = '540px';
+          //card.style.maxWidth = '540px';
   
           // Card row
           const cardRow = document.createElement('div');
@@ -101,7 +103,7 @@ export class Render
   
           // "Read more" button
           const readMoreBtn = document.createElement('a');
-          readMoreBtn.className = 'btn btn-primary view-full-story';
+          readMoreBtn.className = 'btn btn-success view-full-story';
           readMoreBtn.href = '#';
           readMoreBtn.dataset.id = newsItem.id;
           readMoreBtn.textContent = 'Read more';
@@ -110,6 +112,7 @@ export class Render
           const viewSourceBtn = document.createElement('a');
           viewSourceBtn.className = 'btn btn-primary';
           viewSourceBtn.href = newsItem.link;
+          viewSourceBtn.target = '_blank';
           viewSourceBtn.textContent = 'View source';
   
           // Append elements to card body

@@ -46,6 +46,7 @@ export class RenderFullStory
         pubDate.appendChild(pubDateSmall);
         cardBody.appendChild(pubDate);
     
+        //#region Feedback
         // Feedback Section
         const feedbackSection = document.createElement('div');
         feedbackSection.className = 'feedback-section mt-4';
@@ -105,15 +106,16 @@ export class RenderFullStory
         submitFeedback.className = 'btn btn-primary mt-3';
         submitFeedback.textContent = 'Submit Feedback';
         submitFeedback.addEventListener('click', () => {
-            const username = usernameInput.value.trim() || 'Anonymous'; // Default to "Anonymous"
+            const username = usernameInput.value.trim() || 'Anonymous';
             const rating = feedbackSection.dataset.userRating || 'No rating';
             const comment = commentInput.value.trim() || 'No comment';
             console.log(`User Feedback: Username - ${username}, Rating - ${rating}, Comment - ${comment}`);
-            // Process feedback (e.g., save to database, display confirmation message, etc.)
+
             this.newsService.saveFeedback(news.id, rating, comment, username);
         });
         feedbackSection.appendChild(submitFeedback);
-    
+        //#endregion Feedback
+        
         // Append feedback section to card body
         cardBody.appendChild(feedbackSection);
     
