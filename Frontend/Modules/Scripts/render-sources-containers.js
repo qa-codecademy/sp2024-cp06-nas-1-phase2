@@ -106,6 +106,7 @@ export class RenderSourcesContainers {
                 const viewSourceBtn = document.createElement('a');
                 viewSourceBtn.href = newsItem.link;
                 viewSourceBtn.classList.add('btn', 'btn-primary');
+                viewSourceBtn.target = '_blank';
                 viewSourceBtn.textContent = 'View source';
       
                 // Append elements to card body

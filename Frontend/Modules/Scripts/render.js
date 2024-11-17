@@ -1,11 +1,13 @@
 import { RssFeedService } from "../Services/rss-feed-service.js";
 import { RenderSourcesContainers } from "../Scripts/render-sources-containers.js";
+import { RenderFullStory } from "../Scripts/render-full-story.js";
 export class Render
 {
   constructor(newsService) {
     this.newsService = newsService;
     this.rssFeedService = new RssFeedService();
     this.renderSourcesContainers = new RenderSourcesContainers("sourcesContainer", newsService);
+    this.renderFullStory = new RenderFullStory(newsService);
   }
     async main(news, element, newsService) {
       
@@ -161,6 +163,12 @@ renderBySource(sources, element) {
   this.renderSourcesContainers.renderSources(sources, element);
 }
 
+updateCommentsSection(comments) {
+  this.renderFullStory.updateCommentsSection(comments);
+}
+updateRatingSection(ratingData) {
+  this.renderFullStory.updateRatingSection(ratingData);
+}
   static addEventListeners(newsService)
   {
     // const buttons = document.querySelectorAll('.view-full-story');

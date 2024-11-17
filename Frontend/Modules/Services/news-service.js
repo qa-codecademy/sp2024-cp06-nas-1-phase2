@@ -237,7 +237,7 @@ export class NewsService {
 				this.sourcesContainer.style.display = "none";
 				this.fullStoryContainer.style.display = "block";
 				this.hideElements();
-				RenderFullStory.fullStory(newsItem, this.fullStoryContent);
+				RenderFullStory.fullStory(newsItem, this.fullStoryContent, this);
 			} else {
 				console.error("News item not found");
 			}
@@ -245,6 +245,18 @@ export class NewsService {
 			console.error("Error viewing full story:", error);
 		}
 	}
+
+	async fetchCommentsFOrArticle(articleId) {
+		try {
+			const comments = await this.apiService.fetchCommentsFOrArticle(articleId);
+			console.log(comments);
+			
+			return comments;
+		} catch (error) {
+			console.error("Error fetching comments for article:", error);
+		}
+	}
+
 	async saveFeedback(articleId, rating, comment, username) {
 		try {
 			await this.apiService.saveFeedback(articleId, rating, comment, username);
@@ -252,6 +264,32 @@ export class NewsService {
 		} catch (error) {
 			console.error("Error saving feedback:", error);
 			this.notification.innerHTML = `<div class='alert-danger'>${error.message}</div>`;
+		}
+	}
+	
+	async reloadFeedbackAndComments(articleId) {
+		try {
+			// Fetch the updated comments for the article
+			const commentsResponse = await fetch(`${this.apiUrl}/Comments/getCommentsForArticle/${articleId}`);
+			if (!commentsResponse.ok) {
+				throw new Error("Failed to fetch updated comments.");
+			}
+			const comments = await commentsResponse.json();
+	
+			// Update the comment section in the UI
+			this.render.updateCommentsSection(comments);
+	
+			// Fetch the updated rating
+			const ratingResponse = await fetch(`${this.apiUrl}/Feedback/getRatingForArticle/${articleId}`);
+			if (!ratingResponse.ok) {
+				throw new Error("Failed to fetch updated rating.");
+			}
+			const ratingData = await ratingResponse.json();
+	
+			// Update the rating section in the UI
+			this.render.updateRatingSection(ratingData);
+		} catch (error) {
+			console.error("Error reloading feedback and comments:", error);
 		}
 	}
 	initializeEventHandlers() {

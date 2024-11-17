@@ -28,7 +28,7 @@ export class ApiService {
 	}
 	async fetchCommentsFOrArticle(articleId) {
 		try {
-			const response = await fetch(`${this.apiUrl}/Article/getNewsById/${articleId}`);
+			const response = await fetch(`${this.apiUrl}/Comments/getComments/${articleId}`);
 			const jsonData = await response.json();
 			//console.log(jsonData);
 			
@@ -94,13 +94,15 @@ export class ApiService {
 			return [];
 		}
 	}
-	async saveFeedback(articleId, rating, comment, username) {
+	async saveFeedback(articleId, rating, content, username) {
 		try {
-			if(!articleId)
-			{
-				if(!rating)
-				{
-					const response = await fetch(`${this.apiUrl}/Feedback/saveFeedback`, {
+			debugger;
+			if (!articleId) {
+				throw new Error("Article ID is required.");
+			}
+
+			if (rating) {
+				const response = await fetch(`${this.apiUrl}/Feedback/saveFeedback`, {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
@@ -109,24 +111,21 @@ export class ApiService {
 				});
 				if (!response.ok) {
 					throw new Error(`Failed to save feedback: ${response.status}`);
-				}}
-				if (!comment) {
-					const response = await fetch(`${this.apiUrl}/Comments`, {
-						method: "POST",
-						headers: {
-							"Content-Type": "application/json",
-						},
-						body: JSON.stringify({ articleId, comment, username }),
-					});
-					if (!response.ok) {
-						throw new Error(`Failed to save feedback: ${response.status}`);
-					}
 				}
-				
-				
-
 			}
-			
+
+			if (content) {
+				const response = await fetch(`${this.apiUrl}/Comments/saveComment`, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ username, content, articleId }),
+				});
+				if (!response.ok) {
+					throw new Error(`Failed to save feedback: ${response.status}`);
+				}
+			}
 		} catch (error) {
 			console.error("Error saving feedback:", error);
 		}
