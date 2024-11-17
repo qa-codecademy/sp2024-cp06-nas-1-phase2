@@ -18,7 +18,7 @@ namespace sp2024_cp06_nas_1_phase2.Controllers
             _commentService = commentService;
         }
 
-        [HttpPost]
+        [HttpPost("saveComment")]
         public async Task<IActionResult> AddComment([FromBody] CommentDto comment)
         {
             try
