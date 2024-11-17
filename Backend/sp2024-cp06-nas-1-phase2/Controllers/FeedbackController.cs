@@ -18,7 +18,7 @@ namespace sp2024_cp06_nas_1_phase2.Controllers
             _feedbackService = feedbackService;
         }
 
-        [HttpPost]
+        [HttpPost("saveFeedback")]
         public async Task<IActionResult> AddFeedback([FromBody] FeedbackDto feedback)
         {
             try
