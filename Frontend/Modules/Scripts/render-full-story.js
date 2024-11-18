@@ -119,6 +119,7 @@ export class RenderFullStory {
 			);
             try{
 			    await newsService.saveFeedback(news.id, Number(rating), comment, username);
+                //NE RABOTI
                 await newsService.reloadFeedbackAndComments(news.id);
             }
             catch(error){
