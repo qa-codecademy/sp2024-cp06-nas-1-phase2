@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using System.Text;
-using AutoMapper;
+﻿using AutoMapper;
 using DataAccess.Interfaces;
 using DomainModels;
 using DTOs.Feedback;
@@ -35,14 +33,12 @@ namespace Services.Implementations
                 throw;
             }
         }
-
         public async Task<FeedbackDto> AddFeedbackAsync(FeedbackDto feedback)
         {
             try
             {
                 var feedbackModel = _mapper.Map<Feedback>(feedback);
                 await _feedbackRepository.AddAsync(feedbackModel);
-                //await AddTrustMeter(feedbackModel.ArticleId);
                 return _mapper.Map<FeedbackDto>(feedbackModel);
             }
             catch (Exception ex)
@@ -51,7 +47,6 @@ namespace Services.Implementations
                 throw new Exception(ex.Message);
             }
         }
-
         public async Task<double> CalculateTrustMeterAsync(int articleId)
         {
             try
@@ -64,12 +59,10 @@ namespace Services.Implementations
                 throw new Exception(ex.Message);
             }
         }
-
         public async Task DeleteFeedbackAsync(int id)
         {
             try
             {
-                //var feedbackModel = _mapper.Map<Feedback>(feedback);
                 var feedback = _feedbackRepository.GetByIdAsync(id);
                 if (feedback == null)
                 {
@@ -77,7 +70,6 @@ namespace Services.Implementations
                 }
 
                 await _feedbackRepository.DeleteAsync(id);
-                //return _mapper.Map<FeedbackDto>(feedback);
             }
             catch (Exception ex)
             {
@@ -85,24 +77,5 @@ namespace Services.Implementations
                 throw new Exception(ex.Message);
             }
         }
-
-        //private async Task AddTrustMeter(int articleId)
-        //{
-        //    try
-        //    {
-        //        var calculateTrustMeter = await _trustMeterRepository.CalculateTrustMeterAsync(articleId);
-        //        var trustMeter = new TrustMeter
-        //        {
-        //            ArticleId = articleId,
-        //            TrustScore = calculateTrustMeter
-        //        };
-
-        //        await _trustMeterRepository.AddAsync(trustMeter);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception(ex.Message);
-        //    }
-        //}
     }
 }

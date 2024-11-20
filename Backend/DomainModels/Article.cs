@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-
-namespace DomainModels
+﻿namespace DomainModels
 {
     public class Article : BaseEntity
     {

@@ -63,7 +63,6 @@ namespace DataAccess.Implementations
             }
             catch (DbUpdateException dbEx)
             {
-                // Log the inner exception or additional details
                 throw new Exception("Database update error: " + dbEx.InnerException?.Message);
             }
             catch (Exception ex)

@@ -24,7 +24,7 @@ namespace Services.Implementations
 
         public async Task<PaginatedResult<ArticleDto>> GetPagedArticlesAsync(int pageNumber, int pageSize)
         {
-            var totalCount = await _articleRepository.GetTotalCountAsync(); // Method to get total articles count
+            var totalCount = await _articleRepository.GetTotalCountAsync();
             var articles = await _articleRepository.GetPaginatedAllArticlesAsync(pageNumber, pageSize);
 
             var articleDtos = articles.Select(article => _mapper.Map<ArticleDto>(article));
@@ -35,10 +35,6 @@ namespace Services.Implementations
         {
             try
             {
-                //var articles = await _articleRepository.GetAllAsync();
-                //var filteredArticles = articles.Where(x => x.RssFeedId == rssFeedId);
-                //return _mapper.Map<IEnumerable<ArticleDto>>(filteredArticles);
-
                 var totalCount = await _articleRepository.GetTotalCountByRssFeedIdAsync(rssFeedId);
                 var articles = await _articleRepository.GetPaginatedArticlesByRssFeedIdAsync(rssFeedId, pageNumber, pageSize);
 
@@ -89,18 +85,32 @@ namespace Services.Implementations
                 throw new Exception("Error adding articles.", ex);
             }
         }
-        
         public async Task<ArticleDto> GetArticleByIdAsync(int id)
         {
             var article = await _articleRepository.GetByIdAsync(id);
             var mappedArticle = _mapper.Map<ArticleDto>(article);
             return mappedArticle;
         }
+        public async Task<PaginatedResult<ArticleDto>> GetArticleByKeywordAsync(string keyword, int pageNumber, int pageSize)
+        {
+            try
+            {
+                var articles = await _articleRepository
+                    .GetPaginatedArticlesByTitleAndLinkAsync(keyword, pageNumber, pageSize);
+                if (!articles.Any())
+                {
+                    throw new Exception("No articles found for the given keyword");
+                }
 
-        //private async Task<int[]> getPagination(int pageNumber, int pageSize)
-        //{
-        //    var totalCount = await _articleRepository.GetTotalCountAsync(); // Method to get total articles count
-        //    //var articles = await _articleRepository.GetPaginatedAllArticlesAsync(pageNumber, pageSize);
-        //}
+                var totalCount = await _articleRepository.GetTotalCountByKeywordAsync(keyword);
+                var articleDtos = _mapper.Map<IEnumerable<ArticleDto>>(articles);
+
+                return new PaginatedResult<ArticleDto>(articleDtos, totalCount, pageNumber, pageSize);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using DTOs.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Serilog;
 using Services.Interfaces;
 
 namespace sp2024_cp06_nas_1_phase2.Controllers

@@ -46,7 +46,6 @@ namespace xUnitTestMappers
             Assert.Equal(rssFeed.FeedUrl, dto.FeedUrl);
             Assert.Equal(rssFeed.Author, dto.Author);
             Assert.Equal(rssFeed.PubDate, dto.PubDate);
-            // Add more assertions as needed
         }
     }
 }

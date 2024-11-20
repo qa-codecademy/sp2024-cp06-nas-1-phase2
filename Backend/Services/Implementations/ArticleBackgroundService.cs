@@ -7,11 +7,9 @@ namespace Services.Implementations
     public class ArticleBackgroundService : BackgroundService, IArticleBackgroundService
     {
         private readonly IServiceScopeFactory _serviceProvider;
-        //private readonly ILoggerHelper _logger;
-        public ArticleBackgroundService(IServiceScopeFactory serviceProvider)//, ILoggerHelper logger)
+        public ArticleBackgroundService(IServiceScopeFactory serviceProvider)
         {
             _serviceProvider = serviceProvider;
-            //_logger = logger;
         }
         
         public override Task StartAsync(CancellationToken cancellationToken)

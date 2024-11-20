@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using DomainModels;
 using DTOs.Comment;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
 
@@ -23,7 +21,6 @@ namespace sp2024_cp06_nas_1_phase2.Controllers
         {
             try
             {
-                //var mappedComment = _mapper.Map<Comment>(comment);
                 await _commentService.AddCommentAsync(comment);
                 return Ok();
             }

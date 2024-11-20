@@ -25,7 +25,6 @@ namespace DataAccess
         public DbSet<User> Users { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Feedback> Feedback { get; set; }
-        //public DbSet<TrustMeter> TrustMeter { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

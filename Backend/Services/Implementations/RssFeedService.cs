@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using AutoMapper;
 using Common.Modules;
@@ -44,7 +43,6 @@ namespace Services.Implementations
                 throw new Exception(ex.Message);
             }
         }
-
         public async Task<RssFeedDto> GetRssFeedById(int id)
         {
             try
@@ -117,7 +115,6 @@ namespace Services.Implementations
                 throw new Exception(ex.Message);
             }
         }
-
         public async Task<List<ArticleDto>> FetchAndProcessRssFeedsAsync(CancellationToken cancellationToken)
         {
             try
@@ -147,7 +144,7 @@ namespace Services.Implementations
                         }
 
                         var pubDateString = item.Element("pubDate")?.Value;
-                        var pubDate = DateParser.ParseDate(pubDateString) ?? DateTime.Now; // Use current date if parsing fails
+                        var pubDate = DateParser.ParseDate(pubDateString) ?? DateTime.Now;
 
                         var article = new Article
                         {
@@ -158,7 +155,7 @@ namespace Services.Implementations
                             PubDate = pubDate,//.ToString("dd-MM-yyyy HH:mm", CultureInfo.CurrentCulture),
                             FeedUrl = rssFeed.FeedUrl,
                             RssFeedId = rssFeed.Id,
-                            UrlToImage = GetImageUrl(item, image) // Extract image URL based on the RssFeed's properties
+                            UrlToImage = GetImageUrl(item, image)
                         };
 
                         articles.Add(article);
@@ -319,7 +316,6 @@ namespace Services.Implementations
                 return false;
             }
 
-            // Check if the pattern contains typical regex metacharacters
             if (!ContainsRegexMetaCharacters(pattern))
             {
                 return false;
@@ -327,12 +323,10 @@ namespace Services.Implementations
 
             try
             {
-                // Try to create a Regex object from the pattern
                 Regex.Match(string.Empty, pattern);
             }
             catch (ArgumentException)
             {
-                // If an ArgumentException is thrown, the pattern is not a valid regex
                 return false;
             }
 

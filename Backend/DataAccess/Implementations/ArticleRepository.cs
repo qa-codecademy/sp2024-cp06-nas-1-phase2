@@ -13,13 +13,13 @@ namespace DataAccess.Implementations
             _context = context;
         }
         
-        public async Task<IEnumerable<Article>> GetPaginatedArticlesByTitleAndLinkAsync(IEnumerable<string> titles,
-            IEnumerable<string> links, int pageNumber, int pageSize)
+        public async Task<IEnumerable<Article>> GetPaginatedArticlesByTitleAndLinkAsync(string keyword, int pageNumber, int pageSize)
         {
             return await _context.Articles
-                .Where(x => titles.Contains(x.Title) && links.Contains(x.Link))
-                .Skip((pageNumber - 1) * pageSize) // Skips records for previous pages
-                .Take(pageSize) // Takes the specified number of records
+                .Where(x => x.Description.Contains(keyword))// || x.Link.Contains(keyword))
+                .OrderByDescending(article => article.PubDate)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
         }
         public async Task AddRangeAsync(IEnumerable<Article> articles, CancellationToken cancellationToken)
@@ -47,20 +47,6 @@ namespace DataAccess.Implementations
                 .OrderByDescending(x => x.PubDate)
                 .FirstOrDefaultAsync())!;
         }
-
-        //public async Task<IEnumerable<Article>> GetArticlesByRssSourceIdAsync(int rssSourceId)
-        //{
-        //    try
-        //    {
-        //        return await _context.Articles
-        //            .Where(x => x.RssFeedId == rssSourceId)
-        //            .ToListAsync();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception(ex.Message);
-        //    }
-        //}
         public async Task<IEnumerable<Article>> GetPaginatedArticlesByRssFeedIdAsync(int rssFeedId, int pageNumber, int pageSize)
         {
             try
@@ -68,8 +54,8 @@ namespace DataAccess.Implementations
                 return await _context.Articles
                     .Where(x => x.RssFeedId == rssFeedId)
                     .OrderByDescending(article => article.PubDate)
-                    .Skip((pageNumber - 1) * pageSize) // Skips records for previous pages
-                    .Take(pageSize) // Takes the specified number of records
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
                     .ToListAsync();
             }
             catch (Exception ex)
@@ -82,27 +68,30 @@ namespace DataAccess.Implementations
             try
             {
                 return await _context.Articles
-                   .OrderByDescending(article => article.PubDate) // Order by the actual DateTime property
+                   .OrderByDescending(article => article.PubDate)
                    .Skip((pageNumber - 1) * pageSize)
                    .Take(pageSize)
                    .ToListAsync();
-                 
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
         }
-
         public async Task<int> GetTotalCountAsync()
         {
             return await _context.Articles.CountAsync();
         }
-
         public async Task<int> GetTotalCountByRssFeedIdAsync(int rssFeedId)
         {
             return await _context.Articles
                 .Where(x => x.RssFeedId == rssFeedId)
+                .CountAsync();
+        }
+        public async Task<int> GetTotalCountByKeywordAsync(string keyword)
+        {
+            return await _context.Articles
+                .Where(x => x.Description.Contains(keyword))// || x.Link.Contains(keyword))
                 .CountAsync();
         }
     }

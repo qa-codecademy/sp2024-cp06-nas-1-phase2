@@ -57,6 +57,19 @@ namespace sp2024_cp06_nas_1_phase2.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
+        [HttpGet("getByKeyword")]
+        public async Task<IActionResult> GetArticleByKeywordAsync(
+            [FromQuery] string keyword, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+        {
+            try
+            {
+                var paginatedResult = await _articleService.GetArticleByKeywordAsync(keyword, pageNumber, pageSize);
+                return Ok(paginatedResult);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
