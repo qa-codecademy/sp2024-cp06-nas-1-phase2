@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using DataAccess.Interfaces;
+﻿using DataAccess.Interfaces;
 using DomainModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

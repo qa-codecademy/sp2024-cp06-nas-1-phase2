@@ -36,8 +36,9 @@ namespace DataAccess.Implementations
         {
             try
             {
+                var maxId = await _table.MaxAsync(x => x.Id);
                 _logger.LogInformation($"Calling GetByIdAsync from {typeof(T).Name} Repository.");
-                if (id < 0 || id > _table.Count())
+                if (id < 0 || id > maxId)
                 {
                     throw new KeyNotFoundException($"Entity with id: {id} is not found.");
                 }

@@ -28,6 +28,12 @@ namespace DataAccess
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            base.OnModelCreating(builder);
+
+            builder.Entity<Article>()
+                .HasIndex(article => article.PubDate)
+                .HasDatabaseName("IX_Articles_PubDate");
+
             PopulateDb.Seed(builder);
         }
     }

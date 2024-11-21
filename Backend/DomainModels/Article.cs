@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-
-namespace DomainModels
+﻿namespace DomainModels
 {
     public class Article : BaseEntity
     {
@@ -8,7 +6,8 @@ namespace DomainModels
         public string Description { get; set; }
         public string Link { get; set; }
         public string? Author { get; set; }
-        public string? PubDate { get; set; }
+        public DateTime? PubDate { get; set; }
+        //public DateTime? PubDateParsed { get; set; } //new property...
         public string FeedUrl { get; set; }
 
         // Foreign key to RssFeed

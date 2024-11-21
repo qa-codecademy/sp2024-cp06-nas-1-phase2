@@ -4,6 +4,7 @@ using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,13 +12,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(NewsAggregatorDbContext))]
-    partial class NewsAggregatorDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241112210529_Added_Indexing_to_PubDate")]
+    partial class Added_Indexing_to_PubDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.36")
+                .HasAnnotation("ProductVersion", "6.0.33")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -118,6 +120,10 @@ namespace DataAccess.Migrations
                     b.Property<int>("ArticleId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
@@ -200,7 +206,7 @@ namespace DataAccess.Migrations
                             Id = 1,
                             Attribute = "url",
                             Author = "author",
-                            CreatedOn = new DateTime(2024, 11, 13, 22, 19, 31, 957, DateTimeKind.Local).AddTicks(3751),
+                            CreatedOn = new DateTime(2024, 11, 12, 22, 5, 29, 119, DateTimeKind.Local).AddTicks(1002),
                             Description = "description",
                             FeedUrl = "https://mia.mk/feed",
                             Link = "link",
@@ -215,7 +221,7 @@ namespace DataAccess.Migrations
                         {
                             Id = 2,
                             Author = "dc:creator",
-                            CreatedOn = new DateTime(2024, 11, 13, 22, 19, 31, 957, DateTimeKind.Local).AddTicks(3808),
+                            CreatedOn = new DateTime(2024, 11, 12, 22, 5, 29, 119, DateTimeKind.Local).AddTicks(1067),
                             Description = "content:encoded",
                             FeedUrl = "https://telma.com.mk/feed/",
                             Link = "link",
@@ -232,7 +238,7 @@ namespace DataAccess.Migrations
                             Id = 3,
                             Attribute = "src",
                             Author = "",
-                            CreatedOn = new DateTime(2024, 11, 13, 22, 19, 31, 957, DateTimeKind.Local).AddTicks(3813),
+                            CreatedOn = new DateTime(2024, 11, 12, 22, 5, 29, 119, DateTimeKind.Local).AddTicks(1072),
                             Description = "content",
                             FeedUrl = "https://admin.24.mk/api/rss.xml",
                             Link = "link",
@@ -247,7 +253,7 @@ namespace DataAccess.Migrations
                         {
                             Id = 4,
                             Author = "dc:creator",
-                            CreatedOn = new DateTime(2024, 11, 13, 22, 19, 31, 957, DateTimeKind.Local).AddTicks(3819),
+                            CreatedOn = new DateTime(2024, 11, 12, 22, 5, 29, 119, DateTimeKind.Local).AddTicks(1078),
                             Description = "description",
                             FeedUrl = "https://sitel.com.mk/rss.xml",
                             Link = "link",
@@ -263,7 +269,7 @@ namespace DataAccess.Migrations
                         {
                             Id = 5,
                             Author = "author",
-                            CreatedOn = new DateTime(2024, 11, 13, 22, 19, 31, 957, DateTimeKind.Local).AddTicks(3822),
+                            CreatedOn = new DateTime(2024, 11, 12, 22, 5, 29, 119, DateTimeKind.Local).AddTicks(1082),
                             Description = "content",
                             FeedUrl = "https://kanal5.com.mk/rss.aspx",
                             Link = "link",

@@ -1,13 +1,12 @@
-﻿using System.Globalization;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using AutoMapper;
+using Common.Modules;
 using DataAccess.Interfaces;
 using DomainModels;
 using DTOs.Article;
 using DTOs.RssFeed;
 using Services.Interfaces;
-using Shared.Modules;
 
 namespace Services.Implementations
 {
@@ -44,6 +43,18 @@ namespace Services.Implementations
                 throw new Exception(ex.Message);
             }
         }
+        public async Task<RssFeedDto> GetRssFeedById(int id)
+        {
+            try
+            {
+                var feed = await _rssFeedRepository.GetByIdAsync(id);
+                return feed == null ? throw new KeyNotFoundException() : _mapper.Map<RssFeedDto>(feed);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         public async Task<RssFeedDto> GetRssFeedBySourceAsync(string source)
         {
             try
@@ -68,12 +79,19 @@ namespace Services.Implementations
                 throw new Exception(ex.Message);
             }
         }
-        public async Task UpdateRssFeedAsync(UpdateRssFeedDto rssFeedDto)
+        public async Task<RssFeedDto> UpdateRssFeedAsync(int id, UpdateRssFeedDto updateRssFeedDto)
         {
             try
             {
-                var rssSource = _mapper.Map<RssFeed>(rssFeedDto);
+                var rssSource = await _rssFeedRepository.GetByIdAsync(id);
+                if (rssSource == null)
+                {
+                    throw new KeyNotFoundException();
+                }
+
+                _mapper.Map(updateRssFeedDto, rssSource);
                 await _rssFeedRepository.UpdateAsync(rssSource);
+                return _mapper.Map<RssFeedDto>(rssSource);
             }
             catch (Exception ex)
             {
@@ -84,18 +102,19 @@ namespace Services.Implementations
         {
             try
             {
-                var rssSource = _rssFeedRepository.GetByIdAsync(id).ToString();
-                if (rssSource != null)
-                    await _rssFeedRepository.DeleteAsync(id);
-                else
-                    throw new Exception();
+                var rssSource = await _rssFeedRepository.GetByIdAsync(id);
+                if (rssSource == null)
+                {
+                    throw new KeyNotFoundException();
+                }
+
+                await _rssFeedRepository.DeleteAsync(id);
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
         }
-
         public async Task<List<ArticleDto>> FetchAndProcessRssFeedsAsync(CancellationToken cancellationToken)
         {
             try
@@ -125,7 +144,7 @@ namespace Services.Implementations
                         }
 
                         var pubDateString = item.Element("pubDate")?.Value;
-                        var pubDate = DateParser.ParseDate(pubDateString) ?? DateTime.Now; // Use current date if parsing fails
+                        var pubDate = DateParser.ParseDate(pubDateString) ?? DateTime.Now;
 
                         var article = new Article
                         {
@@ -133,10 +152,10 @@ namespace Services.Implementations
                             Description = StripHtmlTags(item.Element("description")?.Value!),
                             Link = item.Element("link")?.Value!,
                             Author = item.Element("author")?.Value!,
-                            PubDate = pubDate.ToString("dd-MM-yyyy HH:mm", CultureInfo.CurrentCulture),
+                            PubDate = pubDate,//.ToString("dd-MM-yyyy HH:mm", CultureInfo.CurrentCulture),
                             FeedUrl = rssFeed.FeedUrl,
                             RssFeedId = rssFeed.Id,
-                            UrlToImage = GetImageUrl(item, image) // Extract image URL based on the RssFeed's properties
+                            UrlToImage = GetImageUrl(item, image)
                         };
 
                         articles.Add(article);
@@ -297,7 +316,6 @@ namespace Services.Implementations
                 return false;
             }
 
-            // Check if the pattern contains typical regex metacharacters
             if (!ContainsRegexMetaCharacters(pattern))
             {
                 return false;
@@ -305,12 +323,10 @@ namespace Services.Implementations
 
             try
             {
-                // Try to create a Regex object from the pattern
                 Regex.Match(string.Empty, pattern);
             }
             catch (ArgumentException)
             {
-                // If an ArgumentException is thrown, the pattern is not a valid regex
                 return false;
             }
 

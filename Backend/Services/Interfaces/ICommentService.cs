@@ -1,5 +1,4 @@
-﻿using DomainModels;
-using DTOs.Comment;
+﻿using DTOs.Comment;
 
 namespace Services.Interfaces
 {

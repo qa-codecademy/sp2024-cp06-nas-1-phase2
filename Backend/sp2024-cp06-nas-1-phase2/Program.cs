@@ -1,7 +1,7 @@
-using Helpers.Extensions;
-using Helpers.Settings;
+using Common.Settings;
 using Mappers;
 using Serilog;
+using Services.Helpers;
 
 namespace sp2024_cp06_nas_1_phase2
 {

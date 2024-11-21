@@ -25,6 +25,7 @@ namespace Services.Implementations
             {
                 var comments = await _commentRepository.GetAllByConditionAsync(x => x.ArticleId == articleId);
                 var mappedComment = _mapper.Map<IEnumerable<CommentDto>>(comments);
+
                 return mappedComment;
             }
             catch (Exception ex)
@@ -33,7 +34,6 @@ namespace Services.Implementations
                 throw;
             }
         }
-
         public async Task AddCommentAsync(CommentDto comment)
         {
             try
@@ -53,7 +53,6 @@ namespace Services.Implementations
                 throw;
             }
         }
-
         public async Task DeleteCommentAsync(int commentId)
         {
             try

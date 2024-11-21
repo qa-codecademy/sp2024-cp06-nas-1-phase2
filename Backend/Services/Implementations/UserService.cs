@@ -60,7 +60,6 @@ namespace Services.Implementations
                 throw new Exception(ex.Message);
             }
         }
-
         public async Task<UserDto> EditUser(UserDto editUser, string username)
         {
             try
@@ -85,7 +84,6 @@ namespace Services.Implementations
                 throw new Exception(ex.Message);
             }
         }
-
         public async Task<RegisterUserDto> RegisterUser(UserDto registerUser)
         {
             try
@@ -95,7 +93,7 @@ namespace Services.Implementations
                     _logger.LogInfo("Username and password must be provided!");
                     throw new ArgumentException("Username and password must be provided!");
                 }
-                //var mappedUser = _mapper.Map<User>(registerUser);
+
                 var hashedPassword = HashPassword(registerUser.Password);
                 var user = new User { Username = registerUser.Username, Password = hashedPassword};
                 await _userRepository.Register(user);
@@ -116,7 +114,6 @@ namespace Services.Implementations
             }
         }
 
-
         private static string HashPassword(string password)
         {
             using var sha256 = SHA256.Create();
@@ -124,30 +121,5 @@ namespace Services.Implementations
             var hashBytes = sha256.ComputeHash(passwordBytes);
             return Convert.ToBase64String(hashBytes);
         }
-        /*
-        private async Task<string> GenerateToken(User user)
-        {
-            var userInfo = await _userRepository.GetByIdAsync(user.Id);
-            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
-            byte[] secretKeyBytes = Encoding.ASCII.GetBytes("this is my custom Secret key for authentication");
-
-            SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Expires = DateTime.UtcNow.AddMinutes(60),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKeyBytes),
-                    SecurityAlgorithms.HmacSha256Signature),
-                Subject = new ClaimsIdentity(
-                    new[]
-                    {
-                        new Claim(ClaimTypes.Name, user.Username),
-                        new Claim("username", $"{userInfo.Username}")
-                        //new Claim("IsAdmin", user.IsAdmin.ToString())
-                    })
-            };
-            SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
-
-            return tokenHandler.WriteToken(token);
-        }
-        */
     }
 }

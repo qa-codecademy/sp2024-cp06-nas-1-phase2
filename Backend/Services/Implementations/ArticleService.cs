@@ -24,22 +24,22 @@ namespace Services.Implementations
 
         public async Task<PaginatedResult<ArticleDto>> GetPagedArticlesAsync(int pageNumber, int pageSize)
         {
-            var totalCount = await _articleRepository.GetTotalCountAsync(); // Method to get total articles count
-            var articles = await _articleRepository.GetPaginatedAsync(pageNumber, pageSize);
+            var totalCount = await _articleRepository.GetTotalCountAsync();
+            var articles = await _articleRepository.GetPaginatedAllArticlesAsync(pageNumber, pageSize);
 
             var articleDtos = articles.Select(article => _mapper.Map<ArticleDto>(article));
 
             return new PaginatedResult<ArticleDto>(articleDtos, totalCount, pageNumber, pageSize);
         }
-        public async Task<IEnumerable<ArticleDto>> GetAllArticlesBySourceAsync(int rssFeedId)
+        public async Task<PaginatedResult<ArticleDto>> GetPagedArticlesBySourceAsync(int rssFeedId, int pageNumber, int pageSize)
         {
             try
             {
-                //var articles = await _articleRepository.GetAllAsync();
-                //var filteredArticles = articles.Where(x => x.RssFeedId == rssFeedId);
-                //return _mapper.Map<IEnumerable<ArticleDto>>(filteredArticles);
-                var articles = await _articleRepository.GetArticlesByRssSourceIdAsync(rssFeedId);
-                return _mapper.Map<IEnumerable<ArticleDto>>(articles);
+                var totalCount = await _articleRepository.GetTotalCountByRssFeedIdAsync(rssFeedId);
+                var articles = await _articleRepository.GetPaginatedArticlesByRssFeedIdAsync(rssFeedId, pageNumber, pageSize);
+
+                var articleDtos = articles.Select(article => _mapper.Map<ArticleDto>(article));
+                return new PaginatedResult<ArticleDto>(articleDtos, totalCount, pageNumber, pageSize);
             }
             catch (Exception ex)
             {
@@ -85,17 +85,46 @@ namespace Services.Implementations
                 throw new Exception("Error adding articles.", ex);
             }
         }
-        public async Task<IEnumerable<ArticleDto>> GetPagedArticlesBySourceAsync(int rssFeedId, int pageNumber, int pageSize)
-        {
-            var articles = await _articleRepository.GetPagedArticlesByRssSourceIdAsync(rssFeedId, pageNumber, pageSize);
-            var result = _mapper.Map<IEnumerable<ArticleDto>>(articles);
-            return result;
-        }
         public async Task<ArticleDto> GetArticleByIdAsync(int id)
         {
             var article = await _articleRepository.GetByIdAsync(id);
             var mappedArticle = _mapper.Map<ArticleDto>(article);
             return mappedArticle;
+        }
+        public async Task<PaginatedResult<ArticleDto>> GetArticleByKeywordAsync(string keyword, int pageNumber, int pageSize)
+        {
+            try
+            {
+                var articles = await _articleRepository
+                    .GetPaginatedArticlesByTitleAndLinkAsync(keyword, pageNumber, pageSize);
+                if (!articles.Any())
+                {
+                    throw new Exception("No articles found for the given keyword");
+                }
+
+                var totalCount = await _articleRepository.GetTotalCountByKeywordAsync(keyword);
+                var articleDtos = _mapper.Map<IEnumerable<ArticleDto>>(articles);
+
+                return new PaginatedResult<ArticleDto>(articleDtos, totalCount, pageNumber, pageSize);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public async Task<PaginatedResult<ArticleDto>> GetPaginatedArticlesBetweenDates(DateTime startDate, DateTime endDate, int pageNumber, int pageSize)
+        {
+            var articles =
+                await _articleRepository.GetPaginatedArticlesBetweenDates(startDate, endDate, pageNumber, pageSize);
+            if (!articles.Any())
+            {
+                throw new Exception($"No articles found between dates {startDate} and {endDate}");
+            }
+
+            var totalCount = await _articleRepository.GetTotalCountBetweenDates(startDate, endDate);
+            var articleDtos = _mapper.Map<IEnumerable<ArticleDto>>(articles);
+
+            return new PaginatedResult<ArticleDto>(articleDtos, totalCount, pageNumber, pageSize);
         }
     }
 }

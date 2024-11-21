@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using System.Text;
-using AutoMapper;
+﻿using AutoMapper;
 using DataAccess.Interfaces;
 using DomainModels;
 using DTOs.Feedback;
@@ -20,19 +18,21 @@ namespace Services.Implementations
             _mapper = mapper;
             _logger = logger;
         }
-        public async Task<double> CalculateTrustMeterAsync(int articleId)
+
+        public async Task<IEnumerable<FeedbackDto>> GetFeedbackByArticleIdAsync(int articleId)
         {
             try
             {
-                return await _feedbackRepository.CalculateTrustMeterAsync(articleId);
+                var feedback = await _feedbackRepository.GetAllByConditionAsync(x => x.ArticleId == articleId);
+                var mappedFeedback = _mapper.Map<IEnumerable<FeedbackDto>>(feedback);
+                return mappedFeedback;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while calculating trust meter!");
-                throw new Exception(ex.Message);
+                _logger.LogError(ex, "Error while getting feedback.");
+                throw;
             }
         }
-
         public async Task<FeedbackDto> AddFeedbackAsync(FeedbackDto feedback)
         {
             try
@@ -47,12 +47,22 @@ namespace Services.Implementations
                 throw new Exception(ex.Message);
             }
         }
-
+        public async Task<double> CalculateTrustMeterAsync(int articleId)
+        {
+            try
+            {
+                return await _feedbackRepository.CalculateTrustMeterAsync(articleId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while calculating trust meter!");
+                throw new Exception(ex.Message);
+            }
+        }
         public async Task DeleteFeedbackAsync(int id)
         {
             try
             {
-                //var feedbackModel = _mapper.Map<Feedback>(feedback);
                 var feedback = _feedbackRepository.GetByIdAsync(id);
                 if (feedback == null)
                 {
@@ -60,7 +70,6 @@ namespace Services.Implementations
                 }
 
                 await _feedbackRepository.DeleteAsync(id);
-                //return _mapper.Map<FeedbackDto>(feedback);
             }
             catch (Exception ex)
             {
