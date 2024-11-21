@@ -3,24 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://unpkg.com/dayjs/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/customParseFormat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/locale/mk.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="CSS/style.css">
     <title>News Aggregator</title>
-    <link rel="icon" type="image/x-icon" href="./Media/favico.ico">
+    <link rel="icon" type="image/x-icon" href="./Images/favico.ico">
 </head>
 <body>
     <!-- NavBar -->
     <nav class="navbar">
-        <div class="logo"><a href="index.html"><img src="Media/logo.jpeg"></a></div>
+        <div class="logo"><a href="index.html"><img src="Images/logo.jpeg"></a></div>
         <ul class="nav-links">
             <li><a href="index.html">Home</a></li>
-            <li><a id="feedback-link" href="#">Feedback</a></li>
             <li><a id="archive-link" href="#">Archive</a></li>
+            <!-- Search Bar -->
+            <li>
+                <form class="d-flex" id="searchForm">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" id="searchInput">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            </li>
+            <!-- Search Bar -->
         </ul>
+        
     </nav>
     <!-- NavBar -->
-
     <div class="container mt-4">
         <div class="row">
 
@@ -46,7 +56,7 @@
                             <div class="dropdown d-inline-block mr-3">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
                                     aria-expanded="false">
-                                    Items per page
+                                    Items per page: 10
                                 </button>
                                 <ul class="dropdown-menu" id="itemsPerPageDropdown">
                                     <li><a class="dropdown-item" href="#" data-value="5">5</a></li>
@@ -54,16 +64,22 @@
                                     <li><a class="dropdown-item" href="#" data-value="15">15</a></li>
                                 </ul>
                             </div>
-                            <!-- <div class="dropdown d-inline-block">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                    Card Layout
-                                </button>
-                                <ul class="dropdown-menu" id="layoutDropdown">
-                                    <li><a class="dropdown-item" href="#" data-value="single">Single Column</a></li>
-                                    <li><a class="dropdown-item" href="#" data-value="triple">Triple Column</a></li>
-                                </ul>
-                            </div> -->
+                        </div>
+
+                        <div class="container mt-4">
+                            <form id="date-filter-form" class="row g-3 align-items-center">
+                                <div class="col-auto">
+                                    <label for="startDate" class="form-label">Start Date</label>
+                                    <input type="date" id="startDate" class="form-control" />
+                                </div>
+                                <div class="col-auto">
+                                    <label for="endDate" class="form-label">End Date</label>
+                                    <input type="date" id="endDate" class="form-control" />
+                                </div>
+                                <div class="col-auto mt-4">
+                                    <button type="submit" id="filterButton" class="btn btn-primary">Filter</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -72,7 +88,10 @@
                     <div class="spinner-grow text-primary" role="status" id="spinner"></div>
             </div>
                 <div id="notification"></div>
+
                 <div id="cardContainer"></div>
+                <div id="sourcesContainer" class="sources-grid"></div>
+
                 <div id="fullStoryContainer" style="display: none;">
                     <div id="fullStoryContent"></div>
                     <button class="btn btn-secondary mt-3" onclick="newsService.hideFullStory()">Back to news list</button>
@@ -81,11 +100,6 @@
                 <div id="paginationContainerArchive" class="d-flex justify-content-center"></div>
             </div>
             <!-- Main Content -->
-
-            <!-- Archive Content -->
-            <!-- <div id="notificationArchive"></div>
-            <div id="cardContainerArchive" class="row"></div> -->
-            <!-- Archive Content -->
 
             <!-- Ads Section -->
             <div class="col-md-2">
@@ -103,20 +117,16 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <script type="module" src="Scripts/app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script type="module" src="Modules/app.js"></script>
 
 <!-- Footer -->
 <footer>
     <div class="container">
         <div class="footer-left">
             <h3>NewsAggregator<span>Logo</span></h3>
-            <!-- <p class="footer-links">
-                <a href="index.html">Home</a>
-                <a href="news.html">News</a>
-                <a href="contact.html">Contact</a>
-                <a href="about.html">About</a>
-            </p> -->
+
             <p class="footer-company-name">&copy; 2024 News Aggregator. All rights reserved.</p>
         </div>
 
@@ -140,7 +150,7 @@
         <div class="footer-right">
             <p class="footer-about">
                 <span>About the company</span>
-                NewsAggregator is a news platform providing the latest and most accurate news from around the world.
+                NewsAggregator is a news platform providing the latest and most accurate news from Macedonia.
             </p>
 
             <div class="footer-icons">
@@ -155,19 +165,3 @@
 <!-- Footer -->
 </body>
 </html>
-    <!-- <footer>
-        <div class="feedback">
-            <h2>Feedback</h2>
-            <p>We value your feedback! <a href="feedback.html">Give us feedback</a></p> 
-        </div>
-        <div class="footer-links">
-            <a href="about.html">About Us</a>
-            <a href="contact.html">Contact</a>
-        </div>
-        <p>&copy; 2024 News Aggregator</p>
-    </footer>
-     <script src="script.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <script type="module" src="Scripts/app.js"></script>
-</body>
-</html> →
