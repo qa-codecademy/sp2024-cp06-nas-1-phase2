@@ -8,6 +8,8 @@ export class RssFeedService {
 
     async fetchSources() {
 		try {
+            console.log(`${this.apiUrl}/RssFeed/getAll`);
+            
 			const response = await fetch(`${this.apiUrl}/RssFeed/getAll`);
 			if (!response.ok) {
 				throw new Error(`Failed to fetch sources: ${response.status}`);

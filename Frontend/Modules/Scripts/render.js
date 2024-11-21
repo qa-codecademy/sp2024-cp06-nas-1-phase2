@@ -27,7 +27,7 @@ export class Render
 
       const topNewsLink = document.getElementById("topNewsLink");
       topNewsLink.addEventListener("click", (event) => {
-        debugger;
+        //debugger;
           event.preventDefault();
           newsService.mainNews(this.newsService.itemsPerPage, 1, "main");
           console.log("Top News clicked");
@@ -143,16 +143,7 @@ export class Render
             //const id = parseInt(this.getAttribute('data-id'));
             newsService.viewFullStory(newsItem);
         });
-      });
-  
-      // Add event listeners for buttons
-      const delay = ms => new Promise(res => setTimeout(res, ms));
-      const yourFunction = async () => {
-        await delay(5000);
-        Render.addEventListeners(newsService);
-      };
-      //yourFunction();
-      
+      });      
   }
 
 renderSources(data, element) {

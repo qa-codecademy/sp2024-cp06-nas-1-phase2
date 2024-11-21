@@ -1,10 +1,7 @@
-//import { ApiService } from "./api-service.js";
 import { Article } from "../Models/article.js";
 import { RenderFullStory } from "../Scripts/render-full-story.js";
 import { Render } from "../Scripts/render.js";
 import { RenderPagination } from "../render-pagination.js";
-import { RenderFeedback } from "../Scripts/render-feedback.js";
-//import { RenderSourcesContainers } from "../Scripts/render-sources-containers.js";
 import { RssFeed } from "../Models/rssFeed.js";
 
 export class NewsService {
@@ -13,10 +10,7 @@ export class NewsService {
 		this.rssFeedService = rssFeedService;
 
 		this.renderPagination = new RenderPagination(this);
-		this.RenderFeedback = new RenderFeedback();
 		this.render = new Render(this);
-		//this.renderSourcesContainers = new RenderSourcesContainers("sourcesContainer");
-		//this.rssFeedService = new RssFeedService();
 
 		this.notification = document.getElementById("notification");
 		this.cardContainer = document.getElementById("cardContainer");
@@ -30,37 +24,22 @@ export class NewsService {
 		this.dropdownItems = document.getElementById("dropdownItems");
 		this.spinnerWrapper = document.getElementById("spinner-wrapper");
 
+		this.searchInput = document.getElementById("searchInput");
+
 		this.newsArray = [];
 		this.mappedNews = [];
 
-		//this.currentPage = this.paginationService.currentPage;
 		this.itemsPerPage = 10;
 
 		this.initializeEventHandlers();
 		//debugger;
-		//this.Test();
-        //this.mainNews(this.itemsPerPage, 1);
         this.getTopThreeNews();
         this.getTopThreeNewsFromAllSources();
 		this.hideElements();
 	}
-
-	async Test()
-	{
-		const article = await this.apiService.fetchArticleById(5);
-		//console.log(article);
-		const trustScoreResponse = await this.apiService.fetchTrustScore(5);
-		const trustScore = trustScoreResponse.trustScore;
-		//console.log(comments);
-		console.log(trustScore);
-		let articleWithTrustScore = new Article({...article, trustScore});
-		console.log(articleWithTrustScore);
-
-		// const sourceById = this.rssFeedService.fetchRssFeedById(article.rssFeedId);
-		// console.log(sourceById);
-	}
-	async mainNews(itemsPerPage, page, calledFrom, sourceId) {
-		try {   
+	async mainNews(itemsPerPage, page, calledFrom, sourceId, keyword, startDate, endDate) {
+		try {
+			debugger;
 			console.log("Items per page from Main: " + itemsPerPage);
 			
             const pageSize = itemsPerPage;
@@ -69,17 +48,26 @@ export class NewsService {
 			{
 				newsData = await this.apiService.fetchRssFeed(page, pageSize);
 				//console.log(newsData);
-				
 			}
 			if(calledFrom === "source")
 			{
 				newsData = await this.apiService.fetchBySources(sourceId, page, pageSize);
 				//console.log(newsData);
 			}
+			if(calledFrom === "search")
+			{
+				newsData = await this.apiService.fetchArticleByKeyword(keyword, page, pageSize);
+				//console.log(newsData);
+			}
+			if(calledFrom === "archive")
+			{
+				newsData = await this.apiService.fetchArchive(startDate, endDate, page, pageSize);
+				//console.log(newsData);
+			}
 			if (newsData.length === 0) {
 				throw new Error("No news found! Try again");
 			}
-
+			
 			this.newsArray = await Promise.all(newsData.items.map(async (item) => {
 				const newsIitem = new Article(item);				
 				const trustScoreData = await this.apiService.fetchTrustScore(newsIitem.id);
@@ -108,6 +96,7 @@ export class NewsService {
 	async getAllNewsFromSource(itemsPerPage, page, sourceId) {
 		this.mainNews(itemsPerPage, page, "source", sourceId);
 	}
+
 	async getAllNewsFromSource1(itemsPerPage, page, sourceId) {
         try {
             
@@ -154,8 +143,8 @@ export class NewsService {
 		}
 	}
     async getTopThreeNews() {
-        const pageNumber = 1; // Requesting the first page
-        const pageSize = 3;   // Setting the page size to 3 to get the top three items
+        const pageNumber = 1;
+        const pageSize = 3;
         //debugger;
         try {
             const newsData = await this.apiService.fetchTopThreeNews(pageNumber, pageSize);
@@ -186,14 +175,15 @@ export class NewsService {
 				};
 			}));
 			//debugger;
-			//this.renderSourcesContainers.renderSources(structuredSources, this.sourcesContainer);
 			this.render.renderSources(structuredSources, this.sourcesContainer);
         } catch (error) {
             console.error("Error fetching top news from all sources:", error);
             this.notification.innerHTML = `<div class='alert-danger'>${error.message}</div>`;
         }
     }
-
+	async getNewsByKeyword(keyword, itemsPerPage, page) {
+		this.mainNews(itemsPerPage, page, "search", null, keyword);
+	}
 	async addSourceToNews(news)
 	{
 		const sources = await this.rssFeedService.fetchSources();
@@ -212,14 +202,18 @@ export class NewsService {
 	}
 
 	async archiveNews() {
-		// debugger;
-		this.cardContainer.innerHTML = "";
-
-		this.newsArray.sort((a, b) => b.id - a.id);
-
-		this.currentPage = 1;
-		this.renderPage(this.currentPage, this.cardContainer, this.newsArray);
+		debugger;
 		this.showElements();
+		this.cardContainer.innerHTML = "";
+		this.sourcesContainer.innerHTML = "";
+		const startDate = document.getElementById("startDate").value;
+		const endDate = document.getElementById("endDate").value;
+		if (!startDate || !endDate) {
+			this.notification.innerHTML = `<div class='alert-danger'>Please select both start and end dates.</div>`;
+			return;
+		}
+
+		this.mainNews(this.itemsPerPage, 1, "archive", null, null, startDate, endDate);
 	}
 
 	renderPage(container, newsData, newsService) {
@@ -266,27 +260,22 @@ export class NewsService {
 			this.notification.innerHTML = `<div class='alert-danger'>${error.message}</div>`;
 		}
 	}
-	
 	async reloadFeedbackAndComments(articleId) {
 		try {
-			// Fetch the updated comments for the article
 			const commentsResponse = await fetch(`${this.apiUrl}/Comments/getCommentsForArticle/${articleId}`);
 			if (!commentsResponse.ok) {
 				throw new Error("Failed to fetch updated comments.");
 			}
 			const comments = await commentsResponse.json();
 	
-			// Update the comment section in the UI
 			this.render.updateCommentsSection(comments);
 	
-			// Fetch the updated rating
 			const ratingResponse = await fetch(`${this.apiUrl}/Feedback/getRatingForArticle/${articleId}`);
 			if (!ratingResponse.ok) {
 				throw new Error("Failed to fetch updated rating.");
 			}
 			const ratingData = await ratingResponse.json();
 	
-			// Update the rating section in the UI
 			this.render.updateRatingSection(ratingData);
 		} catch (error) {
 			console.error("Error reloading feedback and comments:", error);
@@ -348,13 +337,27 @@ export class NewsService {
 			this.hideSpinner();
 		});
 
-		//feedback link click
-		const feedbackLink = document.getElementById("feedback-link");
-		feedbackLink.addEventListener("click", async (event) => {
+		//search click
+		document.getElementById("searchForm").addEventListener("click", async (event) => {
+			event.preventDefault();
+			const query = this.searchInput.value.trim();
+			if(query)
+			{
+				console.log(`Search for: ${query}`);
+				await this.getNewsByKeyword(this.searchInput.value, this.itemsPerPage, 1);
+			}
+			else
+			{
+				alert("Please enter a search query.");
+			}
+		});
+
+		//archive dates filter
+		const archiveDates = document.getElementById("filterButton");
+		archiveDates.addEventListener("click", async (event) => {
 			event.preventDefault();
 			this.showSpinner();
-			RenderFeedback.render(this.cardContainer);
-			this.hideElements();
+			await this.archiveNews();
 			this.hideSpinner();
 		});
 	}
@@ -368,13 +371,15 @@ export class NewsService {
 	hideElements() {
 		this.paginationContainer.style.visibility = "hidden";
 		this.paginationContainerArchive.style.visibility = "hidden";
-		this.dropdownItems.style.visibility = "hidden";
+		// this.dropdownItems.style.visibility = "hidden";
+		this.dropdownItems.style.display = "none";
 	}
 
 	showElements() {
 		this.paginationContainer.style.visibility = "visible";
 		this.paginationContainerArchive.style.visibility = "visible";
-		this.dropdownItems.style.visibility = "visible";
+		// this.dropdownItems.style.visibility = "visible";
+		this.dropdownItems.style.display = "flex";
 	}
 
 	updateItemsPerPage(itemsPerPage) {

@@ -130,4 +130,29 @@ export class ApiService {
 			console.error("Error saving feedback:", error);
 		}
 	}
+	async fetchArticleByKeyword(keyword, pageNumber, pageSize) {
+		try {
+			const response = await fetch(`${this.apiUrl}/Article/getByKeyword?keyword=${keyword}&pageNumber=${pageNumber}&pageSize=${pageSize}`);
+			const jsonData = await response.json();
+			//console.log(jsonData);
+			
+			return jsonData;
+		} catch (error) {
+			console.error(error);
+		}
+	}
+	async fetchArchive(startDate, endDate, pageNumber, pageSize) {
+		try {
+			console.log(startDate);
+			console.log(endDate);
+			
+			const response = await fetch(`${this.apiUrl}/Article/betweenDates?startDate=${startDate}&endDate=${endDate}&pageNumber=${pageNumber}&pageSize=${pageSize}`);
+			const jsonData = await response.json();
+			//console.log(jsonData);
+			
+			return jsonData;
+		} catch (error) {
+			console.error(error);
+		}
+	}
 }

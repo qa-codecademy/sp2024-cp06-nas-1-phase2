@@ -34,22 +34,16 @@ export class RenderSourcesContainers {
 
             // Render each news item
             newsItems.forEach(newsItem => {
-              
-                // Main row container for news item
-                // const rowDiv = document.createElement('div');
-                // rowDiv.classList.add('row', 'justify-content-center', 'mb-4');
       
                 const colDiv = document.createElement('div');
                 colDiv.classList.add('col-auto');
                 //colDiv.classList.add('col');
       
                 const cardDiv = document.createElement('div');
-                // cardDiv.classList.add('card', 'mb-3');
-                // cardDiv.style.maxWidth = '540px';
                 cardDiv.classList.add('card', 'mb-3');
-                cardDiv.style.maxWidth = '100%'; // Ensure card takes up full width of its column
-                cardDiv.style.border = '1px solid #ddd'; // Optional: Define card borders
-                cardDiv.style.padding = '10px'; // Optional: Add padding for smaller cards
+                cardDiv.style.maxWidth = '100%'; 
+                cardDiv.style.border = '1px solid #ddd';
+                cardDiv.style.padding = '10px';
       
                 const innerRowDiv = document.createElement('div');
                 innerRowDiv.classList.add('row', 'g-0');
@@ -122,7 +116,6 @@ export class RenderSourcesContainers {
 
                 readMoreBtn.addEventListener('click', (event) => {
                     event.preventDefault();
-                    //const id = parseInt(this.getAttribute('data-id'));
                     newsService.viewFullStory(newsItem);
                 });
             });
@@ -134,14 +127,6 @@ export class RenderSourcesContainers {
         });
       }
 
-      static addEventListeners(newsService){//, data) {
-        //console.log(data);
-        
-        // const newsLink = document.getElementById(`newsLink${data.source.source.id}`);
-        //     newsLink.addEventListener("click", (event) => {
-        //         event.preventDefault();
-        //         newsService.getNewsFromAllSources(this.newsService.itemsPerPage, 1);
-        //         console.log("News clicked");
-        //     });
+      static addEventListeners(newsService){
     }
 }
