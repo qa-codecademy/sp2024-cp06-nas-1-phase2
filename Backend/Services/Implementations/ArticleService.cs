@@ -112,5 +112,19 @@ namespace Services.Implementations
                 throw new Exception(ex.Message);
             }
         }
+        public async Task<PaginatedResult<ArticleDto>> GetPaginatedArticlesBetweenDates(DateTime startDate, DateTime endDate, int pageNumber, int pageSize)
+        {
+            var articles =
+                await _articleRepository.GetPaginatedArticlesBetweenDates(startDate, endDate, pageNumber, pageSize);
+            if (!articles.Any())
+            {
+                throw new Exception($"No articles found between dates {startDate} and {endDate}");
+            }
+
+            var totalCount = await _articleRepository.GetTotalCountBetweenDates(startDate, endDate);
+            var articleDtos = _mapper.Map<IEnumerable<ArticleDto>>(articles);
+
+            return new PaginatedResult<ArticleDto>(articleDtos, totalCount, pageNumber, pageSize);
+        }
     }
 }

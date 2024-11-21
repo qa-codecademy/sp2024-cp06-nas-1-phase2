@@ -71,5 +71,22 @@ namespace sp2024_cp06_nas_1_phase2.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("betweenDates")]
+        public async Task<IActionResult> GetNewsArticlesBetweenDates(
+            [FromQuery] DateTime startDate, [FromQuery] DateTime endDate, [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10)
+        {
+            try
+            {
+                var paginatedResult =
+                    await _articleService.GetPaginatedArticlesBetweenDates(startDate, endDate, pageNumber, pageSize);
+                return Ok(paginatedResult);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

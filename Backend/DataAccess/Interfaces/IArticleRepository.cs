@@ -12,5 +12,8 @@ namespace DataAccess.Interfaces
         Task AddRangeAsync(IEnumerable<Article> articles, CancellationToken cancellationToken);
         Task<Article> GetLatestArticleByRssFeedIdAsync(int rssFeedId);
         Task<int> GetTotalCountByKeywordAsync(string keyword);
+        Task<IEnumerable<Article>> GetPaginatedArticlesBetweenDates(DateTime startDate, DateTime endDate,
+            int pageNumber, int pageSize);
+        Task<int> GetTotalCountBetweenDates(DateTime startDate, DateTime endDate);
     }
 }
